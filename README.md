@@ -6,7 +6,7 @@ This is Free Software.
 A Collection of Proofs-of-concepts and Samples for Oskari. 
 Created during years 2009 - 2013.    
 
-# social - proof-of-concepts
+# /social - proof-of-concepts
 
 Two examples for sharing map views. 
 
@@ -20,7 +20,7 @@ Two examples for sharing map views.
     * https://github.com/tinkerpop/gremlin/wiki
     * https://github.com/thinkaurelius/titan
 
-# mashup - proof-of-concepts
+# /mashup - proof-of-concepts
 
 Somewhat dated examples of embedding RSS, Wikimepedia and SPARQL content to Oskari Map vector layers.
 
@@ -33,12 +33,12 @@ Somewhat dated examples of embedding RSS, Wikimepedia and SPARQL content to Oska
 - linkedgeodata from linkedgeodata.org endpoint (poc - no terms asked)
     * http://linkedgeodata.org/About  
 
- # games - just for fun
+ # /games - just for fun
  
  A cross-platform just-for-fun simulation of solitaire ported originally from J2ME... 
  At some point jQueryUI interaction was commented out so requires zero user-interaction atm.
  
-# 3d - proof-of-concepts
+# /3d - proof-of-concepts
 
 Somewhat dated 3d embedding with WebGLEarth Globe embedded in Oskari Flyout 
 with some basic WebGLEarth <-> Oskari interaction.
@@ -46,7 +46,7 @@ with some basic WebGLEarth <-> Oskari interaction.
 Note! Requires WebGLEarth code refence to be FIRST in the HTML page embedding Oskari map as 
 google javascript frameworks flush any other frameworks.
 
-    * depends on webglearth javascript lib (not tested in recent years though)
+- depends on webglearth javascript lib (not tested in recent years though)
     * http://www.webglearth.org/  
 
 
