@@ -3,7 +3,8 @@ oskari-extensions
 
 This is Free Software.
 
-Proofs-of-concepts and Samples.    
+A Collection of Proofs-of-concepts and Samples for Oskari. 
+Created during years 2009 - 2013.    
 
 # social - proof-of-concepts
 
