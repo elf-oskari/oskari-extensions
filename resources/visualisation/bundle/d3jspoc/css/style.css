@@ -1,0 +1,61 @@
+div.visualisation {
+	min-width: 500px;
+	min-height: 400px;
+	width: 500px;
+	height: 400px;
+}
+
+div.visualisation rect {
+  fill: none;
+  pointer-events: all;
+}
+
+
+div.visualisation line {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+div.visualisation .string, .regexp {
+  color: #f39;
+}
+
+div.visualisation .keyword {
+  color: #00c;
+}
+
+div.visualisation .comment {
+  color: #777;
+  font-style: oblique;
+}
+
+div.visualisation .number {
+  color: #369;
+}
+
+div.visualisation .class, .special {
+  color: #1181B8;
+}
+
+div.visualisation a:link, a:visited {
+  color: #000;
+  text-decoration: none;
+}
+
+div.visualisation a:hover {
+  color: #666;
+}
+
+div.visualisation .hint {
+  position: absolute;
+  right: 0;
+  width: 1280px;
+  font-size: 12px;
+  color: #999;
+}
+
+
+div.visualisation circle {
+  stroke: #000;
+  stroke-opacity: .5;
+}

@@ -1,0 +1,119 @@
+body.cadastreform-mode {
+	background-color: #333;
+}
+#contentMap.cadastreform-mode {
+	position: relative;
+	background-color: #fefefe;
+	width: 700px;
+	margin-left: 153px;
+}
+
+#mapdiv.cadastreform-mode {
+	top: 420px;
+	border: 1pt solid blue;
+	width: 600px;
+	height: 540px;
+	left: 70px;
+}
+
+#contentMap.cadastreform-mode .Asiakirja-page_1 {
+	background-image: url('Asiakirja-page_1.png');
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-attachment: scroll;
+	width: 700px;
+	height: 991px;
+	margin: 4px;
+	display: block;
+	border: 1px solid grey;
+	background-color: white;
+	position: relative;
+}
+
+#contentMap.cadastreform-mode .Asiakirja-page_2 {
+	background-image: url('Asiakirja-page_2.png');
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-attachment: scroll;
+	width: 700px;
+	height: 991px;
+	margin: 4px;
+	display: block;
+	border: 1px solid grey;
+	background-color: white;
+	position: relative;
+}
+
+#contentMap.cadastreform-mode .Asiakirja-page_3 {
+	background-image: url('Asiakirja-page_3.png');
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-attachment: scroll;
+	width: 700px;
+	height: 991px;
+	display: block;
+	margin: 4px;
+	border: 1px solid grey;
+	background-color: white;
+	position: relative;
+}
+
+#contentMap.cadastreform-mode .Asiakirja-page_4 {
+	background-image: url('Asiakirja-page_4.png');
+	background-repeat: no-repeat;
+	background-position: top left;
+	background-attachment: scroll;
+	width: 700px;
+	height: 991px;
+	margin: 4px;
+	display: block;
+	border: 1px solid grey;
+	background-color: white;
+	position: relative;
+}
+
+/* scroller height */
+
+@media screen {
+	#contentMap.cadastreform-mode .pages {
+		overflow: auto;
+		height: 500px;
+	}
+
+}
+
+@media only screen and (max-height: 600px)  {
+	#contentMap.cadastreform-mode .pages {
+		overflow: auto;
+		height: 400px;
+	}
+
+}
+
+@media only screen and (max-height: 800px) {
+
+	#contentMap.cadastreform-mode .pages {
+		overflow: auto;
+		height: 600px;
+	}
+
+}
+
+@media only screen and (max-height: 1000px) {
+
+	#contentMap.cadastreform-mode .pages {
+		overflow: auto;
+		height: 800px;
+	}
+
+}
+
+@media only screen and (max-height: 1200px){
+
+	#contentMap.cadastreform-mode .pages {
+		overflow: auto;
+		height: 1000px;
+	}
+
+}
+
