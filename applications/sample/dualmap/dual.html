@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>demo</title>
+		<!-- ############# css ################# -->
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+		<link type="text/css" rel="stylesheet"
+	href="http://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic,800,800italic,600italic,600">
+<link rel="stylesheet" type="text/css"
+	href="http://demo.paikkatietoikkuna.fi/mml-2.0-theme/css/base.css" />
+<link rel="stylesheet" type="text/css"
+	href="http://demo.paikkatietoikkuna.fi/mml-2.0-theme/css/forms.css" />
+<link rel="stylesheet" type="text/css"
+	href="http://demo.paikkatietoikkuna.fi/mml-2.0-theme/css/portal.css" />
+<link rel="stylesheet" type="text/css"
+	href="layout-grid.css" />
+
+		<link rel="stylesheet" type="text/css" href="icons.css" />
+		<style>
+			.ui-tooltip, .arrow:after {
+				background: black;
+				border: 2px solid white;
+			}
+			.ui-tooltip {
+				padding: 10px 20px;
+				color: white;
+				border-radius: 20px;
+				font: bold 14px "Helvetica Neue", Sans-Serif;
+				text-transform: uppercase;
+				box-shadow: 0 0 7px black;
+			}
+			.arrow {
+				width: 70px;
+				height: 16px;
+				overflow: hidden;
+				position: absolute;
+				left: 50%;
+				margin-left: -35px;
+				bottom: -16px;
+			}
+			.arrow.top {
+				top: -16px;
+				bottom: auto;
+			}
+			.arrow.left {
+				left: 20%;
+			}
+			.arrow:after {
+				content: "";
+				position: absolute;
+				left: 20px;
+				top: -20px;
+				width: 25px;
+				height: 25px;
+				box-shadow: 6px 5px 9px -9px black;
+				-webkit-transform: rotate(45deg);
+				-moz-transform: rotate(45deg);
+				-ms-transform: rotate(45deg);
+				-o-transform: rotate(45deg);
+				transform: rotate(45deg);
+			}
+			.arrow.top:after {
+				bottom: -20px;
+				top: auto;
+			}
+		</style>
+		<style type="text/css">
+			.drag {
+				position: absolute;
+				border: 1px solid #89B;
+				background: #BCE;
+				height: 58px;
+				width: 58px;
+				top: 120px;
+				cursor: move;
+			}
+			.active {
+				background-color: #BEE;
+				border-color: #8BB;
+			}
+
+		</style>
+		<style type="text/css">
+			@media screen {
+				body {
+					margin: 0;
+					padding: 0;
+					height: 100%;
+				}
+				#mapdiv {
+					width: 100%;
+					height: 100%;
+					border: 1pt solid navy;
+				}
+				#mapdivB {
+					width: 100%;
+					height: 100%;
+					border: 1pt solid navy;
+				}
+				#maptools {
+					background-color: #333438;
+					height: 100%;
+					position: absolute;
+					top: 0;
+					width: 153px;
+					z-index: 2;
+				}
+				#contentMap {
+					height: 100%;
+					margin-left: 153px;
+				}
+				
+			}
+
+		</style>
+		<!-- ############# /css ################# -->
+	</head>
+	<body>
+		<nav id="maptools">
+			<div id="loginbar"></div>
+			<div id="menubar"></div>
+			<div id="menubarb"></div>
+			<div id="divider"></div>
+			<div id="toolbar"></div>
+			<div id="toolbarb"></div>
+		</nav>
+		<div id="contentMap" class="container-fluid">
+			<div id="menutoolbar" class="container-fluid">
+			</div>
+			<div id="menutoolbarb" class="container-fluid">
+			</div>
+			<div class="row-fluid" style="height: 100%;">
+				<div class="oskariui-left">				
+				</div>
+				<div class="span6 oskariui-center" style="height: 100%;">
+					<div id="mapdiv"></div>
+				</div>
+				<div class="span4 oskariui-right" style="height: 100%">
+					<div id="mapdivB"></div>
+				</div>
+			</div>
+		</div>
+		<!-- ############# Javascript ################# -->
+		<!--  OSKARI -->
+		<script type="text/javascript"
+		src="../../../bundles/bundle.js"></script>
+		<!--  OPENLAYERS -->
+		<script type="text/javascript"
+		src="../../../packages/openlayers/startup.js"></script>
+		<!--  LOG4JS -->
+		<!--script type="text/javascript"
+		src="../../../libraries/log4js/log4js.js">
+		</script-->
+		<!--  RIGHTJS (flyout)-->
+		<!--script type="text/javascript"
+		src="../../../libraries/rightjs/javascripts/right.js">
+		</script>
+
+		<script type="text/javascript"
+		src="../../../libraries/rightjs/javascripts/right/dnd.js">
+		</script>
+
+		<script type="text/javascript"
+		src="../../../libraries/rightjs/javascripts/right/resizable.js">
+		</script>
+
+		<script type="text/javascript"
+		src="../../../libraries/rightjs/javascripts/right/sortable.js">
+		</script>
+
+		<script type="text/javascript"
+		src="../../../libraries/rightjs/javascripts/right/slider.js">
+		</script-->
+		<!--script type="text/javascript"
+		src="../../../libraries/rightjs-comp.js">
+		</script-->
+		<!--script src="http://threedubmedia.com/inc/js/jquery.event.drag-2.2.js"></script>
+		<script src="http://threedubmedia.com/inc/js/jquery.event.drag.live-2.2.js"></script>
+		<script src="http://threedubmedia.com/inc/js/jquery.event.drop-2.2.js"></script>
+		<script src="http://threedubmedia.com/inc/js/jquery.event.drop.live-2.2.js"></script-->
+		<!--
+		<script type="text/javascript" src="full.js">
+		</script>
+		-->
+		<script type="text/javascript" src="dual.js"></script>
+		<!-- ############# /Javascript ################# -->
+	</body>
+</html>

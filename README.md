@@ -4,7 +4,8 @@ oskari-extensions
 This is Free Software.
 
 A Collection of Proofs-of-concepts and Samples for Oskari. 
-Created during years 2009 - 2013.    
+Created during years 2009 - 2013.
+
 
 # /bundles/social 
 
@@ -69,4 +70,20 @@ but shared in the spirit of free software though.
 
 A PoC cadastre information popup. Won't really work as this requires non-public backend 
 but shared in the spirit of free software though.  
+ 
+ 
+ # Usage
+ 
+ Requires knowledge of how Oskari works see http://www.oskari.org/
+ 
+ 
+ Include in your JS build or load with oskari dev mode
+ 
+ Oskari.setLoaderMode('dev');
+ Oskari.setPreloaded(false);
+ Oskari.playBundle( {
+   <bundle spec including path to package dir> 
+   <sample bundle specs in /applications subfolders for copy-paste-modifying bundle specs>
+ }); 
+ 
  
