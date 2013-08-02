@@ -6,7 +6,7 @@ This is Free Software.
 A Collection of Proofs-of-concepts and Samples for Oskari. 
 Created during years 2009 - 2013.    
 
-# /social - proof-of-concepts
+# /bundles/social 
 
 Two examples for sharing map views. 
 
@@ -20,7 +20,7 @@ Two examples for sharing map views.
     * https://github.com/tinkerpop/gremlin/wiki
     * https://github.com/thinkaurelius/titan
 
-# /mashup - proof-of-concepts
+# /bundles/mashup 
 
 Somewhat dated examples of embedding RSS, Wikimepedia and SPARQL content to Oskari Map vector layers.
 
@@ -33,12 +33,14 @@ Somewhat dated examples of embedding RSS, Wikimepedia and SPARQL content to Oska
 - linkedgeodata from linkedgeodata.org endpoint (poc - no terms asked)
     * http://linkedgeodata.org/About  
 
- # /games - just for fun
+ # /bundles/games 
  
  A cross-platform just-for-fun simulation of solitaire ported originally from J2ME... 
  At some point jQueryUI interaction was commented out so requires zero user-interaction atm.
  
-# /3d - proof-of-concepts
+# /bundles/3d 
+
+- webglearth
 
 Somewhat dated 3d embedding with WebGLEarth Globe embedded in Oskari Flyout 
 with some basic WebGLEarth <-> Oskari interaction.
@@ -49,7 +51,22 @@ google javascript frameworks flush any other frameworks.
 - depends on webglearth javascript lib (not tested in recent years though)
     * http://www.webglearth.org/  
 
+# /bundles/visualisation
 
+- d3js and d3jspoc
+- An attempt - with success - to embed a d3js lib sample to Oskari Flyout.
+    * http://d3js.org/
+    
 
- 
+# /bundles/cadastre
+
+- cadastreform
+
+A mock-up userinterface PoC for a form with an embedded map. Not very usefult 
+but shared in the spirit of free software though. 
+
+- cadastreinfo
+
+A PoC cadastre information popup. Won't really work as this requires non-public backend 
+but shared in the spirit of free software though.  
  
