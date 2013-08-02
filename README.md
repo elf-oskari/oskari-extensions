@@ -34,7 +34,7 @@ Somewhat dated examples of embedding RSS, Wikimepedia and SPARQL content to Oska
 - linkedgeodata from linkedgeodata.org endpoint (poc - no terms asked)
     * http://linkedgeodata.org/About  
 
- # /bundles/games 
+# /bundles/games 
  
  A cross-platform just-for-fun simulation of solitaire ported originally from J2ME... 
  At some point jQueryUI interaction was commented out so requires zero user-interaction atm.
