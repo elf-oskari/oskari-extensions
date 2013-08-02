@@ -14,8 +14,8 @@ Two examples for sharing map views.
 - mapviewlog keeps track of map navigation history and visualises history 
     with oskari-printout-backend thumbnails with share btn interacts with mapshare bundle.
     
-- mapshare shares map to  http://www.tinkerpop.com/ sevice via Rexster Gremlin API. Proo
-    Tinkerpop stack with Titan / BerkeleyDB backend was used for PoC.
+- mapshare shares map to  http://www.tinkerpop.com/ stack via Rexster Gremlin API. 
+  Proof of concept was developed with Tinkerpop stack with Titan / BerkeleyDB backend.
     
     * https://github.com/tinkerpop/rexster/wiki
     * https://github.com/tinkerpop/gremlin/wiki
@@ -78,7 +78,7 @@ but shared in the spirit of free software though.
  
  These JavaScript extensions require knowledge of how Oskari works see http://www.oskari.org/
  
- # Really want to use these 
+# Really want to use these 
  
  Include in your JS build appsetup.json or load with oskari dev mode
  
