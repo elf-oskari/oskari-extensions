@@ -72,11 +72,15 @@ A PoC cadastre information popup. Won't really work as this requires non-public 
 but shared in the spirit of free software though.  
  
 # Usage
+  
+ The motivation for this project is to share code in the free software spirit. These 
+ bundles may not be of use as is but as an inspiration or base for a new extension.
  
- Requires knowledge of how Oskari works see http://www.oskari.org/
+ These JavaScript extensions require knowledge of how Oskari works see http://www.oskari.org/
  
+ # Really want to use these 
  
- Include in your JS build or load with oskari dev mode
+ Include in your JS build appsetup.json or load with oskari dev mode
  
   Oskari.setLoaderMode('dev');
   Oskari.setPreloaded(false);
