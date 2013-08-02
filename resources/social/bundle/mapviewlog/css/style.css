@@ -1,0 +1,33 @@
+
+.mapviewlog_wrapper {
+	background-image: url('background.png');
+}
+
+.mapviewlog {
+	max-width: 560px;
+}
+
+
+.mapviewlogframe {
+	width: 257px;
+	height: 124px;
+	float: left;
+	display: inline-block;
+	margin-bottom: 20px;
+	margin-left: 10px;
+}
+
+.mapviewlogframe img {
+	border: 1px solid white;
+	margin-top : 3px;
+	cursor: pointer;
+	background-color: white;
+}
+
+
+.mapviewlog_sharebtn {
+	background-image: url('icon-share.png');
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}

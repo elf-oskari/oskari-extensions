@@ -1,0 +1,81 @@
+.solsol_wrapper {
+    background-image: url('background.png') ;
+}
+.solsol {
+	width : 100%;
+	height: 100%;
+	min-width: 512px;
+	min-height: 480px;
+	position: relative;
+	left: 0;
+	top: 0;
+	/*background-image: url('background.png') ;*/
+	
+}
+.solsol_card {
+	position: absolute;
+	width: 57px;
+	height: 83px;
+	background-image: url('svg-cards-2.0-scaledDown.png');
+	box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.80);
+	-moz-box-shadow: 0px 3px 4px black;
+	-webkit-box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.80);
+}
+.solsol_dropzone {
+	position: absolute;
+	width: 57px;
+	height: 83px;
+	border: 1px solid red;
+	opacity: 0.3;
+	background-color: #c0d0e0;
+}
+
+.solsol_state_active {
+}
+.solsol_state_highlight {
+	
+}
+
+.solsol_btn_pause {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background-image: url('../../../../resources/paikkatietoikkuna/Ikonit_16x16/Pixicon16px_0012s_0018_Pause.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #333438;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	margin-right: 2px;
+	
+}
+.solsol_btn_play {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background-image: url('../../../../resources/paikkatietoikkuna/Ikonit_16x16/Pixicon16px_0012s_0019_Play.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #333438;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	margin-right: 2px;
+	
+}
+
+.solsol_btn_new {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background-image: url('../../../../resources/paikkatietoikkuna/Ikonit_16x16/Pixicon16px_0012s_0024_Refresh-Button.png');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-color: #333438;
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	margin-right: 2px;
+	
+}
