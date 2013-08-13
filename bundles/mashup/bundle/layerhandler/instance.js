@@ -101,12 +101,12 @@ Oskari.clazz.define('Oskari.mapframework.bundle.AddExternalMapLayerHandler', fun
 		var mapLayerId = request.getMapLayerId();
 		var spec = request.getSpec();
 
-		////var mapLayerService = core.getService('Oskari.mapframework.service.MapLayerService');
 		var layers = [spec];
-		core.createMapLayerDomain({
-			layers : layers
-		});
 		var mapLayerService = core.getService('Oskari.mapframework.service.MapLayerService');
+		var mapLayer = mapLayerService.createMapLayer(spec);
+		mapLayerService.addLayer(mapLayer);
+		
+
 		var layer = mapLayerService.findMapLayer(mapLayerId);
 
 		this.sandbox.printDebug("###!!### Added Layer Spec @AddExternalMapLayerHandler");
