@@ -17,14 +17,10 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	this.url = 'http://api.geonames.org/wikipediaBoundingBoxJSON?';
 	/*this.url = "http://na.nls.fi?";*/
 	this.maxRows = 512;
-	this.uriTemplate = [this.url,
-		"maxRows=",this.maxRows,"&",
-		"lang=","en","&", 
-		"username=", "oskari","&"];	
+	this.uriTemplate = [this.url, "maxRows=", this.maxRows, "&", "lang=", "en", "&", "username=", "oskari", "&"];
 	this.name = 'Wikipedia';
 
 	this.mediator = null;
-	this.sandbox = null;
 
 	this.layerId = null;
 	this.layer = null;
@@ -46,14 +42,11 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		var nmin = extent.bottom;
 		var nmax = extent.top;
 
-		var queryArgTemplate = [
-			"west=",emin,"&","east=",emax,"&","south=",nmin,"&","north=",nmax];
+		var queryArgTemplate = ["west=", emin, "&", "east=", emax, "&", "south=", nmin, "&", "north=", nmax];
 
 		return queryArgTemplate.join("");
 	},
-	"init" : function(sandbox) {
 
-	},
 	/**
 	 * @method start
 	 *
@@ -61,64 +54,41 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 * and start worker
 	 *
 	 */
-	"start" : function() {
+	"startProcessing" : function() {
 		var me = this;
 
-		if(this.mediator.getState() == "started")
+		me.createProjs();
+
+		me.createMapVisualisation();
+		/**
+		 * throttled func
+		 */
+		this.stopped = false;
+		me.func = window.setInterval(function() {
+			me.processWikipediaQuery();
+		}, 3200);
+	},
+	
+	createMapVisualisation: function() {
+		var me = this, sandbox = me.getSandbox();
+		if( me.layerId && me.layer ) {
 			return;
-
-		var sandbox = this.sandbox = Oskari.$("sandbox");
-		sandbox.register(me);
-		for(p in me.eventHandlers) {
-			sandbox.registerForEventByName(me, p);
 		}
-
-		this.createProjs();
-
-		this.startWorker();
-
+		
 		/* should define how to handle these kinds of situations */
 		var mapmodule = sandbox.findRegisteredModuleInstance('MainMapModule');
-		if(!mapmodule.getLayerPlugin('vectorlayer')) {
+		if (!mapmodule.getLayerPlugin('vectorlayer')) {
 			var veclayerPlugin = Oskari.clazz.create('Oskari.mapframework.mapmodule.VectorLayerPlugin');
 
 			mapmodule.registerPlugin(veclayerPlugin);
 			mapmodule.startPlugin(veclayerPlugin);
 		}
 
-		this.layerId = '____Wikipedia___' + this.mediator.instanceid;
 		this.addVectorLayer();
+		this.layerId = '____Wikipedia___' + this.mediator.instanceid;
 
-		this.mediator.setState("started");
-		return this;
-	},
-	/**
-	 * @method startWorker
-	 *
-	 * let's reload occasionally to show that wikipedia do move
-	 *
-	 */
-	startWorker : function() {
-		var me = this;
+	}, 
 
-		/**
-		 * throttled func
-		 */
-
-		me.func = window.setInterval(function() {
-			me.processWikipediaQuery();
-		}, 3200);
-	},
-	/**
-	 * @method stopWorker
-	 *
-	 * let's not reload when we're gone
-	 *
-	 */
-	stopWorker : function() {
-		var me = this;
-		window.clearInterval(me.func);
-	},
 	/**
 	 * @method createProjs
 	 *
@@ -127,11 +97,13 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 */
 	createProjs : function() {
 		var me = this;
-
+		if (me.projs) {
+			return;
+		}
 		/*
 		 * projection support
 		 */
-		this.projs = {
+		me.projs = {
 			"EPSG:4326" : new Proj4js.Proj("EPSG:4326"),
 			"EPSG:3067" : new Proj4js.Proj("EPSG:3067")
 		};
@@ -149,22 +121,15 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 * stop bundle instance
 	 *
 	 */
-	"stop" : function() {
+	"stopProcessing" : function() {
 
 		this.stopped = true;
 
-		this.stopWorker();
+		var me = this;
+		window.clearInterval(me.func);
 
-		this.removeVectorLayer();
+		/*this.removeVectorLayer();*/
 
-		var sandbox = this.sandbox;
-		for(p in this.eventHandlers) {
-			sandbox.unregisterFromEventByName(this, p);
-		}
-
-		this.mediator.setState("stopped");
-
-		return this;
 	},
 	/**
 	 * @method setNE
@@ -183,16 +148,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		this.mapMoved = true;
 
 	},
-	/*
-	 * @method onEvent
-	 *
-	 * event handler that dispatches events
-	 * to handlers registered in eventHandlers props
-	 *
-	 */
-	onEvent : function(event) {
-		return this.eventHandlers[event.getName()].apply(this, [event]);
-	},
+
 	/**
 	 * @property defaults
 	 *
@@ -211,18 +167,28 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 */
 	getFeatureInfo : function(lon, lat, dontShow) {
 
-		var me = this;
-		if(!me.features)
+		var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
+		if (!me.features)
 			return;
 
 		var pt = new OpenLayers.Geometry.Point(lon, lat);
 		var c = OpenLayers.Geometry.Polygon.createRegularPolygon(pt, 32, 8);
 
-		for(var f = 0; f < me.features.length; f++) {
+		for (var f = 0; f < me.features.length; f++) {
 			var feat = me.features[f];
 
-			if(!feat.geometry)
+			if (!feat.geometry)
 				continue;
+
+			var fg = new OpenLayers.Geometry.Point(feat.geometry.coordinates[0], feat.geometry.coordinates[1]);
+
+			if (!fg.intersects(c)) {
+				continue;
+			}
+
+			flyout.showArticleFeature(feat);
+
+			break;
 
 		}
 
@@ -239,8 +205,8 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		 */
 		"AfterMapLayerRemoveEvent" : function(event) {
 			var layer = event.getMapLayer();
-			if(layer.getId() == this.layerId) {
-				if(this.sandbox.getObjectCreator(event) != this.getName()) {
+			if (layer.getId() == this.layerId) {
+				if (this.sandbox.getObjectCreator(event) != this.getName()) {
 
 					this.stop();
 
@@ -255,18 +221,14 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		 *
 		 */
 		"AfterMapMoveEvent" : function(event) {
-			var me = this;
-			var sandbox = this.sandbox;
+			var me = this, sandbox = this.getSandbox(), map = sandbox.getMap(), scale = map.getScale();
 
-			var scale = event.getScale();
-
-			if(!(scale < this.defaults.minScale && scale > this.defaults.maxScale))
+			if (!(scale < this.defaults.minScale && scale > this.defaults.maxScale))
 				return;
 
-			var n = event.getCenterY();
-			var e = event.getCenterX();
-			var scale = event.getScale();
-			var mapExtent = sandbox.getMap().getExtent()
+			var n = map.getY();
+			var e = map.getX();
+			var mapExtent = map.getExtent()
 			var clonedExtent = {
 				bottom : mapExtent.bottom,
 				left : mapExtent.left,
@@ -275,33 +237,10 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 			};
 
 			me.sandbox.printDebug("N:" + n + " E:" + e);
-			/**
-			 * throttled func to avoid overloading wikipedia JSONP
-			 */
 			me.setNE(n, e, clonedExtent);
 
 		},
-		/**
-		 * @method eventHandlers.FeaturesGetInfoEvent
-		 *
-		 */
-		"FeaturesGetInfoEvent" : function(event) {
-			var sandbox = this.sandbox;
 
-			var layer = event.getMapLayer();
-			var layerId = layer.getId();
-			if(layerId != this.layerId) {
-				sandbox.printDebug("FeaturesGetInfoEvent@Wikipedia: " + this.layerId + " vs. queried " + layerId);
-				return;
-			}
-
-			sandbox.printDebug("Handling FeaturesGetInfoEvent for " + this.layerId);
-
-			var lon = event.getLon();
-			var lat = event.getLat();
-
-			this.getFeatureInfo(lon, lat);
-		},
 		/**
 		 * @method eventHandlers.MouseHoverEvent
 		 *
@@ -317,7 +256,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		 *
 		 */
 		"AfterAddExternalMapLayerEvent" : function(event) {
-			if(event.getMapLayerId() == this.layerId)
+			if (event.getMapLayerId() == this.layerId)
 				this.layer = event.getLayer();
 		},
 		/**
@@ -325,17 +264,37 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		 *
 		 */
 		"AfterRemoveExternalMapLayerEvent" : function(event) {
-			if(event.getMapLayerId() == this.layerId)
+			if (event.getMapLayerId() == this.layerId)
 				this.layer = null;
 		},
 		"MapLayerVisibilityChangedEvent" : function(event) {
 			var layer = event.getMapLayer();
 			var layerId = layer.getId();
-			if(layerId != this.layerId) {
+			if (layerId != this.layerId) {
 				return;
 			}
 
 			this.paused = !layer.isVisible();
+		},
+
+		'userinterface.ExtensionUpdatedEvent' : function(event) {
+
+			var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
+
+			if (event.getExtension().getName() != me.getName()) {
+				// not me -> do nothing
+				return;
+			}
+
+			var isShown = event.getViewState() != "close";
+
+			flyout.showContent(isShown);
+
+			if (isShown) {
+				me.startProcessing();
+			} else {
+				me.stopProcessing();
+			}
 		}
 	},
 
@@ -347,28 +306,29 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 
 	processWikipediaQuery : function() {
 
-		var me = this;
+		var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
 		var ne = me.ne;
-		if(!ne)
+		if (!ne)
 			return;
-		if(ne.processed)
+		if (ne.processed)
 			return;
 
 		ne.processed = true;
 
-		if(me.paused)
+		if (me.paused)
 			return;
 
-		if(me.stopped)
+		if (me.stopped)
 			return;
 
-		if(me.busy)
+		if (me.busy)
 			return;
 
-		if(!me.mapMoved)
+		if (!me.mapMoved)
 			return;
 
 		me.busy = true;
+		
 
 		var n = ne.n;
 		var e = ne.e;
@@ -406,21 +366,24 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 *
 	 */
 	postWikipediaQuery : function(cn, ce, extent) {
-		var me = this;
+		var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
 
 		var query = this.createSpatialGeonamesQuery(cn, ce, extent);
 
 		var uribase = me.uriTemplate.join('');
 		var uri = [uribase, query].join('');
-
+		flyout.showSpinner('wikipedia',true);
+		
 		jQuery.ajax({
 			url : uri,
 			dataType : "jsonp",
 			success : function(data, textStatus) {
 				me.processWikipediaJsonResponse(data);
+				flyout.showSpinner('wikipedia',false);
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				alert(textStatus);
+				flyout.showSpinner('wikipedia',false);
+				
 
 			}
 		});
@@ -444,18 +407,17 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		};
 
 		jQuery.each(resultsBindings, function(indexInArray, valueOfElement) {
-			var geometryCoords = [valueOfElement.lng,valueOfElement.lat];
+			var geometryCoords = [valueOfElement.lng, valueOfElement.lat];
 			var pos = Proj4js.transform(proj4326, proj3067, {
-					x : geometryCoords[0],
-					y : geometryCoords[1]
-				});
+				x : geometryCoords[0],
+				y : geometryCoords[1]
+			});
 
 			var label = valueOfElement.title;
 			var uri = valueOfElement.wikipediaUrl;
 			var type = valueOfElement.feature;
 			var summary = valueOfElement.summary;
 
-			
 			features.push({
 				"type" : "Feature",
 				"geometry" : {
@@ -472,10 +434,12 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 
 		});
 
+		this.features = features;
+
 		this.busy = false;
 		this.mapMoved = false;
 
-		if(me.stopped)
+		if (me.stopped)
 			return;
 
 		var event = me.sandbox.getEventBuilder("FeaturesAvailableEvent")(me.layer, fc, "application/json", "EPSG:3067", "replace");
@@ -483,7 +447,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		me.sandbox.notifyAll(event);
 
 	},
-	
+
 	/**
 	 * @property styledLayerDescriptors
 	 *
@@ -491,10 +455,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 *
 	 */
 	styledLayerDescriptors : {
-		'default' : '<StyledLayerDescriptor version="1.0.0" ' + 'xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" ' + '    xmlns="http://www.opengis.net/sld" ' +
-		 '    xmlns:ogc="http://www.opengis.net/ogc" ' + '    xmlns:xlink="http://www.w3.org/1999/xlink" ' + '    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> ' + 
-		 '  <NamedLayer> ' + '    <Name>Simple point with stroke</Name> ' + '   <UserStyle><Title>GeoServer SLD Cook Book: Simple point with stroke</Title> ' +
-		  '    <FeatureTypeStyle><Rule>' + '<PointSymbolizer>' + ' <Graphic><Mark><WellKnownName>circle</WellKnownName><Fill>' + '        <CssParameter name="fill">#000080</CssParameter>' + '       </Fill><Stroke>' + '          <CssParameter name="stroke">#000000</CssParameter>' + '           <CssParameter name="stroke-width">2</CssParameter>' + '          </Stroke></Mark><Size>12</Size></Graphic>' + '     </PointSymbolizer>' + '<TextSymbolizer><Label><ogc:PropertyName>title</ogc:PropertyName></Label>' + '<Fill><CssParameter name="fill">#000000</CssParameter></Fill></TextSymbolizer>' + '</Rule></FeatureTypeStyle>' + '</UserStyle></NamedLayer></StyledLayerDescriptor>'
+		'default' : '<StyledLayerDescriptor version="1.0.0" ' + 'xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" ' + '    xmlns="http://www.opengis.net/sld" ' + '    xmlns:ogc="http://www.opengis.net/ogc" ' + '    xmlns:xlink="http://www.w3.org/1999/xlink" ' + '    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> ' + '  <NamedLayer> ' + '    <Name>Simple point with stroke</Name> ' + '   <UserStyle><Title>GeoServer SLD Cook Book: Simple point with stroke</Title> ' + '    <FeatureTypeStyle><Rule>' + '<PointSymbolizer>' + ' <Graphic><Mark><WellKnownName>circle</WellKnownName><Fill>' + '        <CssParameter name="fill">#000080</CssParameter>' + '       </Fill><Stroke>' + '          <CssParameter name="stroke">#000000</CssParameter>' + '           <CssParameter name="stroke-width">2</CssParameter>' + '          </Stroke></Mark><Size>12</Size></Graphic>' + '     </PointSymbolizer>' + '<TextSymbolizer><Label><ogc:PropertyName>title</ogc:PropertyName></Label>' + '<Fill><CssParameter name="fill">#000000</CssParameter></Fill></TextSymbolizer>' + '</Rule></FeatureTypeStyle>' + '</UserStyle></NamedLayer></StyledLayerDescriptor>'
 	},
 
 	/**
@@ -601,8 +562,10 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 *  this BundleInstance's name
 	 *
 	 */
-	__name : "Oskari.mashup.bundle.WikipediaBundleInstance"
+	__name : "wikipedia"
 
 }, {
-	"protocol" : ["Oskari.bundle.BundleInstance", "Oskari.mapframework.module.Module", "Oskari.mapframework.bundle.extension.Extension", "Oskari.mapframework.bundle.extension.EventListener"]
+	"protocol" : ["Oskari.bundle.BundleInstance", "Oskari.mapframework.module.Module", "Oskari.mapframework.bundle.extension.Extension", "Oskari.mapframework.bundle.extension.EventListener"],
+	"extend" : ["Oskari.userinterface.extension.DefaultExtension"]
+
 });

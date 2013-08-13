@@ -2,12 +2,12 @@
  * @class Oskari.mashup.bundle.TrainsBundleInstance
  *
  * An OpenLayers based GeoRSS reader updater module
- * 
+ *
  * This sample adds a vector layer to map.
  * This sample listens to some events to control trains visualization and reloading.
- * This sample has no UI
- * 
- * 
+
+ *
+ *
  *
  * Trains Bundle Instance
  */
@@ -16,7 +16,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	/* a static sample n/a for now */
 	this.url = //'trains.xml';
 	/* this requires a proxy for cross domain access */
-		'/rss/TrainRSS/TrainService.svc/AllTrains';
+	'/rss/TrainRSS/TrainService.svc/AllTrains';
 	this.name = 'TrainsModule';
 
 	this.mediator = null;
@@ -34,9 +34,6 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
  * prototype
  */
 {
-	"init" : function(sandbox) {
-
-	},
 	/**
 	 * @method start
 	 *
@@ -44,36 +41,19 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 * and start worker
 	 *
 	 */
-	"start" : function() {
+	startProcessing : function() {
 		var me = this;
 
-		if(this.mediator.getState() == "started")
-			return;
-
-		var sandbox = this.sandbox = Oskari.$("sandbox");
-		sandbox.register(me);
-		for(p in me.eventHandlers) {
-			sandbox.registerForEventByName(me, p);
-		}
+		var sandbox = me.getSandbox();
 
 		this.createProjs();
 		this.createFormats();
 
+		this.createMapVisualisation();
+
+		this.stopped = false;
 		this.startWorker();
 
-		/* should define how to handle these kinds of situations */
-		var mapmodule = sandbox.findRegisteredModuleInstance('MainMapModule');
-		if(!mapmodule.getLayerPlugin('vectorlayer')) {
-			var veclayerPlugin = Oskari.clazz.create('Oskari.mapframework.mapmodule.VectorLayerPlugin');
-
-			mapmodule.registerPlugin(veclayerPlugin);
-			mapmodule.startPlugin(veclayerPlugin);
-		}
-
-		this.layerId = '____Trains___' + this.mediator.instanceid;
-		this.addVectorLayer();
-
-		this.mediator.setState("started");
 		return this;
 	},
 	/**
@@ -103,6 +83,27 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 		var me = this;
 		window.clearInterval(me.func);
 	},
+
+	createMapVisualisation : function() {
+		var me = this, sandbox = me.getSandbox();
+
+		if (this.layerId && this.layer) {
+			return;
+		}
+
+		/* should define how to handle these kinds of situations */
+		var mapmodule = sandbox.findRegisteredModuleInstance('MainMapModule');
+		if (!mapmodule.getLayerPlugin('vectorlayer')) {
+			var veclayerPlugin = Oskari.clazz.create('Oskari.mapframework.mapmodule.VectorLayerPlugin');
+
+			mapmodule.registerPlugin(veclayerPlugin);
+			mapmodule.startPlugin(veclayerPlugin);
+		}
+
+		this.layerId = '____Trains___' + this.mediator.instanceid;
+		this.addVectorLayer();
+
+	},
 	/**
 	 * @method createProjs
 	 *
@@ -111,7 +112,9 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 */
 	createProjs : function() {
 		var me = this;
-
+		if (me.projs) {
+			return;
+		}
 		/*
 		 * projection support
 		 */
@@ -128,6 +131,9 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	createFormats : function() {
 
 		var me = this;
+		if (me.format) {
+			return;
+		}
 		/*
 		 * format
 		 */
@@ -170,7 +176,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 			 * node, try the href attribute
 			 */
 			var link = this.getChildValue(item, "*", "link");
-			if(!link) {
+			if (!link) {
 				try {
 					link = this.getElementsByTagNameNS(item, "*", "link")[0].getAttribute("href");
 				} catch(e) {
@@ -198,7 +204,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 			};
 
 			var readFlds = this.readFields;
-			for(f in readFlds ) {
+			for (f in readFlds ) {
 				var val = this.getChildValue(item, "*", f, readFlds[f].defaultValue);
 				data[f] = val;
 			}
@@ -224,22 +230,13 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 * stop bundle instance
 	 *
 	 */
-	"stop" : function() {
+	stopProcessing : function() {
 
 		this.stopped = true;
 
 		this.stopWorker();
+		/*this.removeVectorLayer();*/
 
-		this.removeVectorLayer();
-
-		var sandbox = this.sandbox;
-		for(p in this.eventHandlers) {
-			sandbox.unregisterFromEventByName(this, p);
-		}
-
-		this.mediator.setState("stopped");
-
-		return this;
 	},
 	/**
 	 * @method setNE
@@ -249,18 +246,12 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 *
 	 */
 	setNE : function(n, e) {
-		this.ne = {n:n,e:e}
+		this.ne = {
+			n : n,
+			e : e
+		}
 	},
-	/*
-	 * @method onEvent
-	 *
-	 * event handler that dispatches events
-	 * to handlers registered in eventHandlers props
-	 *
-	 */
-	onEvent : function(event) {
-		return this.eventHandlers[event.getName()].apply(this, [event]);
-	},
+
 	/**
 	 * @property defaults
 	 *
@@ -279,19 +270,26 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 */
 	getFeatureInfo : function(lon, lat, dontShow) {
 
-		var me = this;
-		if(!me.features)
+		var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
+		if (!me.features)
 			return;
 
 		var pt = new OpenLayers.Geometry.Point(lon, lat);
 		var c = OpenLayers.Geometry.Polygon.createRegularPolygon(pt, 32, 8);
 
-		for(var f = 0; f < me.features.length; f++) {
+		for (var f = 0; f < me.features.length; f++) {
 			var feat = me.features[f];
 
-			if(!feat.geometry)
+			if (!feat.geometry)
 				continue;
 
+			if (!feat.geometry.intersects(c)) {
+				continue;
+			}
+
+			flyout.showTrainFeature(feat);
+
+			break;
 		}
 
 	},
@@ -307,8 +305,8 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 		 */
 		"AfterMapLayerRemoveEvent" : function(event) {
 			var layer = event.getMapLayer();
-			if(layer.getId() == this.layerId) {
-				if(this.sandbox.getObjectCreator(event) != this.getName()) {
+			if (layer.getId() == this.layerId) {
+				if (this.sandbox.getObjectCreator(event) != this.getName()) {
 
 					this.stop();
 
@@ -328,7 +326,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 
 			var scale = event.getScale();
 
-			if(!(scale < this.defaults.minScale && scale > this.defaults.maxScale))
+			if (!(scale < this.defaults.minScale && scale > this.defaults.maxScale))
 				return;
 
 			var n = event.getCenterY();
@@ -341,27 +339,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 			me.setNE(n, e);
 
 		},
-		/**
-		 * @method eventHandlers.FeaturesGetInfoEvent
-		 *
-		 */
-		"FeaturesGetInfoEvent" : function(event) {
-			var sandbox = this.sandbox;
 
-			var layer = event.getMapLayer();
-			var layerId = layer.getId();
-			if(layerId != this.layerId) {
-				sandbox.printDebug("FeaturesGetInfoEvent@Trains: " + this.layerId + " vs. queried " + layerId);
-				return;
-			}
-
-			sandbox.printDebug("Handling FeaturesGetInfoEvent for " + this.layerId);
-
-			var lon = event.getLon();
-			var lat = event.getLat();
-
-			this.getFeatureInfo(lon, lat);
-		},
 		/**
 		 * @method eventHandlers.MouseHoverEvent
 		 *
@@ -377,7 +355,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 		 *
 		 */
 		"AfterAddExternalMapLayerEvent" : function(event) {
-			if(event.getMapLayerId() == this.layerId)
+			if (event.getMapLayerId() == this.layerId)
 				this.layer = event.getLayer();
 		},
 		/**
@@ -385,18 +363,37 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 		 *
 		 */
 		"AfterRemoveExternalMapLayerEvent" : function(event) {
-			if(event.getMapLayerId() == this.layerId)
+			if (event.getMapLayerId() == this.layerId)
 				this.layer = null;
 		},
 		"MapLayerVisibilityChangedEvent" : function(event) {
 			var layer = event.getMapLayer();
 			var layerId = layer.getId();
-			if(layerId != this.layerId) {
+			if (layerId != this.layerId) {
 				return;
 			}
 
 			this.paused = !layer.isVisible();
-		}
+		},
+		'userinterface.ExtensionUpdatedEvent' : function(event) {
+
+			var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
+
+			if (event.getExtension().getName() != me.getName()) {
+				// not me -> do nothing
+				return;
+			}
+
+			var isShown = event.getViewState() != "close";
+
+			flyout.showContent(isShown);
+
+			if (isShown) {
+				me.startProcessing();
+			} else {
+				me.stopProcessing();
+			}
+		},
 	},
 
 	/**
@@ -408,20 +405,19 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	processQuery : function() {
 
 		var me = this;
-		if(me.paused)
+		if (me.paused)
 			return;
-		if(me.stopped)
+		if (me.stopped)
 			return;
 
 		var ne = this.ne;
-		if( !ne)
+		if (!ne)
 			return;
-			
+
 		var n = ne.n;
 		var e = ne.e;
 
 		me.sandbox.printDebug("STARTING Trains LOAD N:" + n + " E:" + e);
-
 
 		me.loadRss();
 
@@ -431,17 +427,22 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 *
 	 */
 	loadRss : function() {
-		var me = this;
+		var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
 		var params = {};
 		var tsNow = new Date().getTime();
+
+		flyout.showSpinner('trains', true);
+
 		var rssOptions = {
 			url : me.url + "?ts=" + tsNow,
 			params : OpenLayers.Util.upperCaseObject(params),
 			callback : function(request) {
+				flyout.showSpinner('trains', false);
 				me.handleResponse(request);
 			},
 			scope : this
 		};
+
 		OpenLayers.Request.GET(rssOptions);
 	},
 	/**
@@ -451,24 +452,24 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 */
 	handleResponse : function(request) {
 
-		if(!this.layer)
+		if (!this.layer)
 			return;
 
-		if(this.stopped)
+		if (this.stopped)
 			return;
 
 		var me = this;
 
 		var doc = request.responseXML;
-		if(!doc || !doc.documentElement) {
+		if (!doc || !doc.documentElement) {
 			doc = request.responseText;
 		}
 		var feats = me.format.read(doc);
 
-		if(this.stopped)
+		if (this.stopped)
 			return;
 
-		if(!feats)
+		if (!feats)
 			return;
 
 		var event = this.sandbox.getEventBuilder("FeaturesAvailableEvent")(this.layer, feats, "application/nlsfi-x-openlayers-feature", "EPSG:3067", "replace");
@@ -592,8 +593,9 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 *  this BundleInstance's name
 	 *
 	 */
-	__name : "Oskari.mashup.bundle.TrainsBundleInstance"
+	__name : "trains"
 
 }, {
-	"protocol" : ["Oskari.bundle.BundleInstance", "Oskari.mapframework.module.Module", "Oskari.mapframework.bundle.extension.Extension", "Oskari.mapframework.bundle.extension.EventListener"]
+	"protocol" : ["Oskari.bundle.BundleInstance", "Oskari.mapframework.module.Module", "Oskari.mapframework.bundle.extension.Extension", "Oskari.mapframework.bundle.extension.EventListener"],
+	"extend" : ["Oskari.userinterface.extension.DefaultExtension"]
 });

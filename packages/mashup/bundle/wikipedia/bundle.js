@@ -10,6 +10,12 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundle", function() {
 	"create" : function() {
 
 		return Oskari.clazz.create("Oskari.mashup.bundle.WikipediaBundleInstance");
+		
+		 var inst = Oskari.clazz.create("Oskari.mashup.bundle.WikipediaBundleInstance",
+            'wikipedia',
+            "Oskari.mashup.bundle.wikipedia.Flyout"
+            );
+
 	},
 	"update" : function(manager, bundle, bi, info) {
 
@@ -27,7 +33,26 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundle", function() {
 		"scripts" : [{
 			"type" : "text/javascript",
 			"src" : "../../../../bundles/mashup/bundle/wikipedia/instance.js"
+		},{
+			"type" : "text/javascript",
+			"src" : "../../../../bundles/mashup/bundle/wikipedia/Flyout.js"
+		},{
+			"type" : "text/css",
+			"src" : "../../../../resources/mashup/bundle/wikipedia/css/style.css"
 		}],
+	 	"locales" : [{
+            "lang" : "fi",
+            "type" : "text/javascript",
+            "src" : "../../../../bundles/mashup/bundle/wikipedia/locale/fi.js"
+        }, {
+            "lang" : "sv",
+            "type" : "text/javascript",
+            "src" : "../../../../bundles/mashup/bundle/wikipedia/locale/sv.js"
+        }, {
+            "lang" : "en",
+            "type" : "text/javascript",
+            "src" : "../../../../bundles/mashup/bundle/wikipedia/locale/en.js"
+        }],
 		"resources" : []
 	},
 	"bundle" : {

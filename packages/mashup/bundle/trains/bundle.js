@@ -9,7 +9,13 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundle", function() {
 	 */
 	"create" : function() {
 
-		return Oskari.clazz.create("Oskari.mashup.bundle.TrainsBundleInstance");
+		
+		 var inst = Oskari.clazz.create("Oskari.mashup.bundle.TrainsBundleInstance",
+            'trains',
+            "Oskari.mashup.bundle.trains.Flyout"
+            );
+            
+        return inst;
 	},
 	"update" : function(manager, bundle, bi, info) {
 
@@ -27,7 +33,26 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundle", function() {
 		"scripts" : [{
 			"type" : "text/javascript",
 			"src" : "../../../../bundles/mashup/bundle/trains/instance.js"
+		},{
+			"type" : "text/javascript",
+			"src" : "../../../../bundles/mashup/bundle/trains/Flyout.js"
+		},{
+			"type" : "text/css",
+			"src" : "../../../../resources/mashup/bundle/trains/css/style.css"
 		}],
+			"locales" : [{
+            "lang" : "fi",
+            "type" : "text/javascript",
+            "src" : "../../../../bundles/mashup/bundle/trains/locale/fi.js"
+        }, {
+            "lang" : "sv",
+            "type" : "text/javascript",
+            "src" : "../../../../bundles/mashup/bundle/trains/locale/sv.js"
+        }, {
+            "lang" : "en",
+            "type" : "text/javascript",
+            "src" : "../../../../bundles/mashup/bundle/trains/locale/en.js"
+        }],
 		"resources" : []
 	},
 	"bundle" : {
