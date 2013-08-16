@@ -1,8 +1,7 @@
 /**
  * @class Oskari.weather.bundle.metolibpoc.MetoLibPocBundleInstance
  *
- * Sample extension bundle definition which inherits most functionalty
- * from DefaultExtension class.
+ * Q&D poc which transforms metolib XML/JSON response to GeoJSON and posts json to map
  *
  */
 Oskari.clazz.define('Oskari.weather.bundle.metolibpoc.MetoLibPocBundleInstance',
@@ -13,50 +12,14 @@ function() {
 	this.conf = {
 		"name" : "metolibpoc",
 		"sandbox" : "sandbox",
-		"stateful" : true,
 		"tileClazz" : "Oskari.userinterface.extension.DefaultTile",
 		"flyoutClazz" : "Oskari.weather.bundle.metolibpoc.Flyout"
 	};
 	this.state = {};
 	this.mapMoved = true;
 }, {
-	"init" : function() {
-		var me = this;
-		var conf = me.conf;
-		var locale = me.getLocalization();
-		var sandboxName = ( conf ? conf.sandbox : null ) || 'sandbox';
-		var sandbox = Oskari.getSandbox(sandboxName);
-		var mapModule = sandbox.findRegisteredModuleInstance('MainMapModule');
 
-		// register plugin for map
-		/*var classifyPlugin = Oskari.clazz.create('Oskari.weather.bundle.metolibpoc.plugin.ManageClassificationPlugin', conf ,locale);
-		 mapModule.registerPlugin(classifyPlugin);
-		 mapModule.startPlugin(classifyPlugin);
-		 this.classifyPlugin = classifyPlugin;*/
-		return null;
-	},
 	"eventHandlers" : {
-		/**
-		 * @method eventHandlers.AfterMapLayerRemoveEvent
-		 *
-		 */
-		"AfterMapLayerRemoveEvent" : function(event) {
-			var layer = event.getMapLayer();
-			if (layer.getId() == this.layerId) {
-				if (this.sandbox.getObjectCreator(event) != this.getName()) {
-
-					this.stop();
-
-					var manager = this.mediator.manager;
-					var instanceid = this.mediator.instanceid;
-					manager.destroyInstance(instanceid);
-				}
-			}
-		},
-		/**
-		 * @method eventHandlers.AfterMapMoveEvent
-		 *
-		 */
 		"AfterMapMoveEvent" : function(event) {
 			var me = this, sandbox = this.getSandbox(), map = sandbox.getMap(), scale = map.getScale();
 
@@ -73,11 +36,6 @@ function() {
 			me.setNE(n, e, clonedExtent);
 
 		},
-
-		/**
-		 * @method eventHandlers.MouseHoverEvent
-		 *
-		 */
 		"MouseHoverEvent" : function(event) {
 			var x0 = event.getLon();
 			var y0 = event.getLat();
@@ -87,22 +45,7 @@ function() {
 			}
 			this.getFeatureInfo(x0, y0, true);
 		},
-		/**
-		 * @method eventHandlers.AfterAddExternalMapLayerEvent
-		 *
-		 */
-		"AfterAddExternalMapLayerEvent" : function(event) {
-			if (event.getMapLayerId() == this.layerId)
-				this.layer = event.getLayer();
-		},
-		/**
-		 * @method eventHandlers.AfterRemoveExternalMapLayerEvent
-		 *
-		 */
-		"AfterRemoveExternalMapLayerEvent" : function(event) {
-			if (event.getMapLayerId() == this.layerId)
-				this.layer = null;
-		},
+
 		"MapLayerVisibilityChangedEvent" : function(event) {
 			var me = this;
 			var layer = event.getMapLayer();
@@ -145,9 +88,6 @@ function() {
 
 		},
 
-		/**
-		 * @method userinterface.ExtensionUpdatedEvent
-		 */
 		'userinterface.ExtensionUpdatedEvent' : function(event) {
 
 			var me = this, flyout = this.plugins['Oskari.userinterface.Flyout'];
@@ -168,25 +108,12 @@ function() {
 			}
 		}
 	},
-	/**
-	 * @method setState
-	 * Sets the map state to one specified in the parameter. State is bundle specific, check the
-	 * bundle documentation for details.
-	 * @param {Object} state bundle state as JSON
-	 * @param {Boolean} ignoreLocation true to NOT set map location based on state
-	 */
-	setState : function(state, ignoreLocation) {
-		return;
-	},
-	getState : function() {
-		return {};
-	},
 
 	processWeather : function(bbox, cb) {
 
 		var me = this;
 		if (me.stopped) {
-			return ;
+			return;
 		}
 
 		var requestParameter = "ws_10min";
@@ -297,9 +224,6 @@ function() {
 		me.createProjs();
 
 		me.createMapVisualisation();
-		/**
-		 * throttled func
-		 */
 		this.stopped = false;
 
 		var n = map.getY();
@@ -315,27 +239,14 @@ function() {
 		me.setNE(n, e, clonedExtent);
 	},
 
-	/**
-	 * @method stop
-	 *
-	 * stop bundle instance
-	 *
-	 */
 	"stopProcessing" : function() {
 
 		this.stopped = true;
 
 		var me = this;
-		/*this.removeVectorLayer();*/
 
 	},
-	/**
-	 * @method setNE
-	 *
-	 * support function for feature info requests
-	 *
-	 *
-	 */
+
 	setNE : function(n, e, extent) {
 		this.ne = {
 			n : n,
@@ -347,22 +258,11 @@ function() {
 
 	},
 
-	/**
-	 * @property defaults
-	 *
-	 * some defaults for this bundle
-	 */
 	defaults : {
 		minScale : 8000000,
 		maxScale : 1
 	},
 
-	/*
-	 * @method getFeatureInfo
-	 *
-	 * search for any hits using OpenLayers geometry operations
-	 *
-	 */
 	getFeatureInfo : function(lon, lat, dontShow) {
 
 		var me = this, flyout = me.plugins['Oskari.userinterface.Flyout'];
@@ -447,14 +347,12 @@ function() {
 			"styledLayerDescriptor" : defaultSLD
 		};
 
-		var request = this.sandbox.getRequestBuilder(
-		"AddExternalMapLayerRequest")(mapLayerId, spec);
-		this.sandbox.request(this.getName(), request);
+		var mapLayerService = this.sandbox.getService('Oskari.mapframework.service.MapLayerService');
+		var mapLayer = mapLayerService.createMapLayer(spec);
+		mapLayerService.addLayer(mapLayer);
+		var layer = mapLayerService.findMapLayer(mapLayerId);
+		this.layer = layer;
 
-		/**
-		 * Note: Added Layer Info is received via Event see below
-		 *
-		 */
 		var requestAddToMap = this.sandbox.getRequestBuilder(
 		"AddMapLayerRequest")(mapLayerId, keepLayersOrder);
 
@@ -477,19 +375,6 @@ function() {
 		"RemoveMapLayerRequest")(mapLayerId);
 
 		this.sandbox.request(this.getName(), requestRemovalFromMap);
-
-		/**
-		 * remove map layer spec
-		 */
-		var request = this.sandbox.getRequestBuilder(
-		"RemoveExternalMapLayerRequest")(mapLayerId);
-
-		this.sandbox.request(this.getName(), request);
-
-		/*
-		 * Note: AfterRemoveExternalMapLayerEvent resets
-		 * this.layer
-		 */
 
 	},
 

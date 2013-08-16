@@ -55,7 +55,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 	 *
 	 */
 	"startProcessing" : function() {
-		var me = this;
+		var me = this, sandbox = this.getSandbox(), map = sandbox.getMap(), scale = map.getScale();
 
 		me.createProjs();
 
@@ -64,17 +64,30 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		 * throttled func
 		 */
 		this.stopped = false;
+
+		var n = map.getY();
+		var e = map.getX();
+		var mapExtent = map.getExtent()
+		var clonedExtent = {
+			bottom : mapExtent.bottom,
+			left : mapExtent.left,
+			top : mapExtent.top,
+			right : mapExtent.right
+		};
+
+		me.setNE(n, e, clonedExtent);
+
 		me.func = window.setInterval(function() {
 			me.processWikipediaQuery();
 		}, 3200);
 	},
-	
-	createMapVisualisation: function() {
+
+	createMapVisualisation : function() {
 		var me = this, sandbox = me.getSandbox();
-		if( me.layerId && me.layer ) {
+		if (me.layerId && me.layer) {
 			return;
 		}
-		
+
 		/* should define how to handle these kinds of situations */
 		var mapmodule = sandbox.findRegisteredModuleInstance('MainMapModule');
 		if (!mapmodule.getLayerPlugin('vectorlayer')) {
@@ -84,10 +97,10 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 			mapmodule.startPlugin(veclayerPlugin);
 		}
 
-		this.addVectorLayer();
 		this.layerId = '____Wikipedia___' + this.mediator.instanceid;
+		this.addVectorLayer();
 
-	}, 
+	},
 
 	/**
 	 * @method createProjs
@@ -172,7 +185,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 			return;
 
 		var pt = new OpenLayers.Geometry.Point(lon, lat);
-		var c = OpenLayers.Geometry.Polygon.createRegularPolygon(pt, 32, 8);
+		var c = OpenLayers.Geometry.Polygon.createRegularPolygon(pt, 64, 8);
 
 		for (var f = 0; f < me.features.length; f++) {
 			var feat = me.features[f];
@@ -236,7 +249,6 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 				right : mapExtent.right
 			};
 
-			me.sandbox.printDebug("N:" + n + " E:" + e);
 			me.setNE(n, e, clonedExtent);
 
 		},
@@ -248,25 +260,13 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		"MouseHoverEvent" : function(event) {
 			var x0 = event.getLon();
 			var y0 = event.getLat();
+			if (!event.isPaused()) {
+				return;
+			}
 
 			this.getFeatureInfo(x0, y0, true);
 		},
-		/**
-		 * @method eventHandlers.AfterAddExternalMapLayerEvent
-		 *
-		 */
-		"AfterAddExternalMapLayerEvent" : function(event) {
-			if (event.getMapLayerId() == this.layerId)
-				this.layer = event.getLayer();
-		},
-		/**
-		 * @method eventHandlers.AfterRemoveExternalMapLayerEvent
-		 *
-		 */
-		"AfterRemoveExternalMapLayerEvent" : function(event) {
-			if (event.getMapLayerId() == this.layerId)
-				this.layer = null;
-		},
+	
 		"MapLayerVisibilityChangedEvent" : function(event) {
 			var layer = event.getMapLayer();
 			var layerId = layer.getId();
@@ -328,7 +328,6 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 			return;
 
 		me.busy = true;
-		
 
 		var n = ne.n;
 		var e = ne.e;
@@ -372,18 +371,17 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 
 		var uribase = me.uriTemplate.join('');
 		var uri = [uribase, query].join('');
-		flyout.showSpinner('wikipedia',true);
-		
+		flyout.showSpinner('wikipedia', true);
+
 		jQuery.ajax({
 			url : uri,
 			dataType : "jsonp",
 			success : function(data, textStatus) {
 				me.processWikipediaJsonResponse(data);
-				flyout.showSpinner('wikipedia',false);
+				flyout.showSpinner('wikipedia', false);
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				flyout.showSpinner('wikipedia',false);
-				
+				flyout.showSpinner('wikipedia', false);
 
 			}
 		});
@@ -478,12 +476,14 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 			"name" : "Wikipedia",
 			"wmsName" : "1",
 			"type" : "vectorlayer",
+			"orgName" : "GeoNames",
+			"inspire" : "Wikipedia",
 			"styles" : {
 				"title" : "Wikipedia",
 				"legend" : "",
 				"name" : "1"
 			},
-			"descriptionLink" : "http://www.vr.fi/",
+			"descriptionLink" : "http://geonames.org/",
 			"legendImage" : "",
 			"info" : "",
 			"isQueryable" : true,
@@ -501,14 +501,12 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 			"styledLayerDescriptor" : defaultSLD
 		};
 
-		var request = this.sandbox.getRequestBuilder(
-		"AddExternalMapLayerRequest")(mapLayerId, spec);
-		this.sandbox.request(this.getName(), request);
+		var mapLayerService = this.sandbox.getService('Oskari.mapframework.service.MapLayerService');
+		var mapLayer = mapLayerService.createMapLayer(spec);
+		mapLayerService.addLayer(mapLayer);
+		var layer = mapLayerService.findMapLayer(mapLayerId);
+		this.layer = layer;
 
-		/**
-		 * Note: Added Layer Info is received via Event see below
-		 *
-		 */
 		var requestAddToMap = this.sandbox.getRequestBuilder(
 		"AddMapLayerRequest")(mapLayerId, keepLayersOrder);
 
@@ -531,19 +529,6 @@ Oskari.clazz.define("Oskari.mashup.bundle.WikipediaBundleInstance", function(b) 
 		"RemoveMapLayerRequest")(mapLayerId);
 
 		this.sandbox.request(this.getName(), requestRemovalFromMap);
-
-		/**
-		 * remove map layer spec
-		 */
-		var request = this.sandbox.getRequestBuilder(
-		"RemoveExternalMapLayerRequest")(mapLayerId);
-
-		this.sandbox.request(this.getName(), request);
-
-		/*
-		 * Note: AfterRemoveExternalMapLayerEvent resets
-		 * this.layer
-		 */
 
 	},
 	/**

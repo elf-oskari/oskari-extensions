@@ -42,9 +42,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 	 *
 	 */
 	startProcessing : function() {
-		var me = this;
-
-		var sandbox = me.getSandbox();
+		var me = this, sandbox = this.sandbox, map = sandbox.getMap();
 
 		this.createProjs();
 		this.createFormats();
@@ -54,7 +52,12 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 		this.stopped = false;
 		this.startWorker();
 
-		return this;
+		var scale = map.getScale();
+
+		var n = map.getY();
+		var e = map.getX();
+
+		me.setNE(n, e);
 	},
 	/**
 	 * @method startWorker
@@ -321,21 +324,16 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 		 *
 		 */
 		"AfterMapMoveEvent" : function(event) {
-			var me = this;
-			var sandbox = this.sandbox;
+			var me = this, sandbox = this.sandbox, map = sandbox.getMap();
 
-			var scale = event.getScale();
+			var scale = map.getScale();
 
 			if (!(scale < this.defaults.minScale && scale > this.defaults.maxScale))
 				return;
 
-			var n = event.getCenterY();
-			var e = event.getCenterX();
+			var n = map.getY();
+			var e = map.getX();
 
-			me.sandbox.printDebug("N:" + n + " E:" + e);
-			/**
-			 * throttled func to avoid overloading trains JSONP
-			 */
 			me.setNE(n, e);
 
 		},
@@ -347,25 +345,13 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 		"MouseHoverEvent" : function(event) {
 			var x0 = event.getLon();
 			var y0 = event.getLat();
+			if (!event.isPaused()) {
+				return;
+			}
 
 			this.getFeatureInfo(x0, y0, true);
 		},
-		/**
-		 * @method eventHandlers.AfterAddExternalMapLayerEvent
-		 *
-		 */
-		"AfterAddExternalMapLayerEvent" : function(event) {
-			if (event.getMapLayerId() == this.layerId)
-				this.layer = event.getLayer();
-		},
-		/**
-		 * @method eventHandlers.AfterRemoveExternalMapLayerEvent
-		 *
-		 */
-		"AfterRemoveExternalMapLayerEvent" : function(event) {
-			if (event.getMapLayerId() == this.layerId)
-				this.layer = null;
-		},
+	
 		"MapLayerVisibilityChangedEvent" : function(event) {
 			var layer = event.getMapLayer();
 			var layerId = layer.getId();
@@ -514,6 +500,8 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 				"legend" : "",
 				"name" : "1"
 			},
+			"orgName" : "VR",
+			"inspire" : "VR",
 			"descriptionLink" : "http://www.vr.fi/",
 			"legendImage" : "",
 			"info" : "",
@@ -532,14 +520,12 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 			"styledLayerDescriptor" : defaultSLD
 		};
 
-		var request = this.sandbox.getRequestBuilder(
-		"AddExternalMapLayerRequest")(mapLayerId, spec);
-		this.sandbox.request(this.getName(), request);
+		var mapLayerService = this.sandbox.getService('Oskari.mapframework.service.MapLayerService');
+		var mapLayer = mapLayerService.createMapLayer(spec);
+		mapLayerService.addLayer(mapLayer);
+		var layer = mapLayerService.findMapLayer(mapLayerId);
+		this.layer = layer;
 
-		/**
-		 * Note: Added Layer Info is received via Event see below
-		 *
-		 */
 		var requestAddToMap = this.sandbox.getRequestBuilder(
 		"AddMapLayerRequest")(mapLayerId, keepLayersOrder);
 
@@ -563,18 +549,6 @@ Oskari.clazz.define("Oskari.mashup.bundle.TrainsBundleInstance", function(b) {
 
 		this.sandbox.request(this.getName(), requestRemovalFromMap);
 
-		/**
-		 * remove map layer spec
-		 */
-		var request = this.sandbox.getRequestBuilder(
-		"RemoveExternalMapLayerRequest")(mapLayerId);
-
-		this.sandbox.request(this.getName(), request);
-
-		/*
-		 * Note: AfterRemoveExternalMapLayerEvent resets
-		 * this.layer
-		 */
 
 	},
 	/**

@@ -61,12 +61,12 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 	"start" : function() {
 		var me = this;
 
-		if(this.mediator.getState() == "started")
+		if (this.mediator.getState() == "started")
 			return;
 
 		var sandbox = this.sandbox = Oskari.$("sandbox");
 		sandbox.register(me);
-		for(p in me.eventHandlers) {
+		for (p in me.eventHandlers) {
 			sandbox.registerForEventByName(me, p);
 		}
 
@@ -76,7 +76,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 
 		/* should define how to handle these kinds of situations */
 		var mapmodule = sandbox.findRegisteredModuleInstance('MainMapModule');
-		if(!mapmodule.getLayerPlugin('vectorlayer')) {
+		if (!mapmodule.getLayerPlugin('vectorlayer')) {
 			var veclayerPlugin = Oskari.clazz.create('Oskari.mapframework.mapmodule.VectorLayerPlugin');
 
 			mapmodule.registerPlugin(veclayerPlugin);
@@ -155,7 +155,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 		this.removeVectorLayer();
 
 		var sandbox = this.sandbox;
-		for(p in this.eventHandlers) {
+		for (p in this.eventHandlers) {
 			sandbox.unregisterFromEventByName(this, p);
 		}
 
@@ -209,16 +209,16 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 	getFeatureInfo : function(lon, lat, dontShow) {
 
 		var me = this;
-		if(!me.features)
+		if (!me.features)
 			return;
 
 		var pt = new OpenLayers.Geometry.Point(lon, lat);
 		var c = OpenLayers.Geometry.Polygon.createRegularPolygon(pt, 32, 8);
 
-		for(var f = 0; f < me.features.length; f++) {
+		for (var f = 0; f < me.features.length; f++) {
 			var feat = me.features[f];
 
-			if(!feat.geometry)
+			if (!feat.geometry)
 				continue;
 
 		}
@@ -236,8 +236,8 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 		 */
 		"AfterMapLayerRemoveEvent" : function(event) {
 			var layer = event.getMapLayer();
-			if(layer.getId() == this.layerId) {
-				if(this.sandbox.getObjectCreator(event) != this.getName()) {
+			if (layer.getId() == this.layerId) {
+				if (this.sandbox.getObjectCreator(event) != this.getName()) {
 
 					this.stop();
 
@@ -257,7 +257,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 
 			var scale = event.getScale();
 
-			if(!(scale < this.defaults.minScale && scale > this.defaults.maxScale))
+			if (!(scale < this.defaults.minScale && scale > this.defaults.maxScale))
 				return;
 
 			var n = event.getCenterY();
@@ -287,7 +287,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 
 			var layer = event.getMapLayer();
 			var layerId = layer.getId();
-			if(layerId != this.layerId) {
+			if (layerId != this.layerId) {
 				sandbox.printDebug("FeaturesGetInfoEvent@LinkedGeodata: " + this.layerId + " vs. queried " + layerId);
 				return;
 			}
@@ -309,26 +309,11 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 
 			this.getFeatureInfo(x0, y0, true);
 		},
-		/**
-		 * @method eventHandlers.AfterAddExternalMapLayerEvent
-		 *
-		 */
-		"AfterAddExternalMapLayerEvent" : function(event) {
-			if(event.getMapLayerId() == this.layerId)
-				this.layer = event.getLayer();
-		},
-		/**
-		 * @method eventHandlers.AfterRemoveExternalMapLayerEvent
-		 *
-		 */
-		"AfterRemoveExternalMapLayerEvent" : function(event) {
-			if(event.getMapLayerId() == this.layerId)
-				this.layer = null;
-		},
+
 		"MapLayerVisibilityChangedEvent" : function(event) {
 			var layer = event.getMapLayer();
 			var layerId = layer.getId();
-			if(layerId != this.layerId) {
+			if (layerId != this.layerId) {
 				return;
 			}
 
@@ -346,23 +331,23 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 
 		var me = this;
 		var ne = me.ne;
-		if(!ne)
+		if (!ne)
 			return;
-		if(ne.processed)
+		if (ne.processed)
 			return;
 
 		ne.processed = true;
 
-		if(me.paused)
+		if (me.paused)
 			return;
 
-		if(me.stopped)
+		if (me.stopped)
 			return;
 
-		if(me.busy)
+		if (me.busy)
 			return;
 
-		if(!me.mapMoved)
+		if (!me.mapMoved)
 			return;
 
 		me.busy = true;
@@ -451,7 +436,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 			var geometryType = gsplits[0];
 			var geometryCoords = null;
 			var pos = null;
-			if(geometryType === 'POINT') {
+			if (geometryType === 'POINT') {
 				geometryCoords = gsplits[1].split(')')[0].split(' ');
 				pos = Proj4js.transform(proj4326, proj3067, {
 					x : geometryCoords[0],
@@ -483,7 +468,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 		this.busy = false;
 		this.mapMoved = false;
 
-		if(me.stopped)
+		if (me.stopped)
 			return;
 
 		var event = me.sandbox.getEventBuilder("FeaturesAvailableEvent")(me.layer, fc, "application/json", "EPSG:3067", "replace");
@@ -491,7 +476,7 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 		me.sandbox.notifyAll(event);
 
 	},
-	
+
 	/**
 	 * @property styledLayerDescriptors
 	 *
@@ -545,9 +530,11 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 			"styledLayerDescriptor" : defaultSLD
 		};
 
-		var request = this.sandbox.getRequestBuilder(
-		"AddExternalMapLayerRequest")(mapLayerId, spec);
-		this.sandbox.request(this.getName(), request);
+		var mapLayerService = this.sandbox.getService('Oskari.mapframework.service.MapLayerService');
+		var mapLayer = mapLayerService.createMapLayer(spec);
+		mapLayerService.addLayer(mapLayer);
+		var layer = mapLayerService.findMapLayer(mapLayerId);
+		this.layer = layer;
 
 		/**
 		 * Note: Added Layer Info is received via Event see below
@@ -575,19 +562,6 @@ Oskari.clazz.define("Oskari.mashup.bundle.LinkedGeodataBundleInstance", function
 		"RemoveMapLayerRequest")(mapLayerId);
 
 		this.sandbox.request(this.getName(), requestRemovalFromMap);
-
-		/**
-		 * remove map layer spec
-		 */
-		var request = this.sandbox.getRequestBuilder(
-		"RemoveExternalMapLayerRequest")(mapLayerId);
-
-		this.sandbox.request(this.getName(), request);
-
-		/*
-		 * Note: AfterRemoveExternalMapLayerEvent resets
-		 * this.layer
-		 */
 
 	},
 	/**
