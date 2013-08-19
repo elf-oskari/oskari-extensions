@@ -7,7 +7,9 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
 			instancename : 'requireminimal',
 
 			/* instance class */
-			instance : Oskari.cls('Oskari.sample.bundle.requireminimal.RequireBundleInstance').extend("Oskari.userinterface.extension.DefaultExtension").events({
+			instance : Oskari.cls('Oskari.sample.bundle.requireminimal.RequireBundleInstance').
+				extend("Oskari.userinterface.extension.DefaultExtension").
+				events({
 				"AfterMapMoveEvent" : function() {
 
 					this.getPlugins()['Oskari.userinterface.Flyout'].showMapMove();
@@ -15,7 +17,9 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
 			}),
 
 			/* flyout class */
-			flyout : Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").extend("Oskari.userinterface.extension.DefaultFlyout").category({
+			flyout : Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").
+			extend("Oskari.userinterface.extension.DefaultFlyout").
+			category({
 
 				startPlugin : function() {
 					var el = this.getEl();
