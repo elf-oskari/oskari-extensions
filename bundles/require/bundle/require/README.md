@@ -13,4 +13,7 @@ Previously:
 - reduce usage of lengthy class identifiers with build pattern
 
 To be implemented
-- simplified request handler registrations 
+- simplified sandbox registrations
+- simplified event and request class registrations
+- simplified request handler (class) registrations
+- simplified api to send/post events to/from sandbox 
