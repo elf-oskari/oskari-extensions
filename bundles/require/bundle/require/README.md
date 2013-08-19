@@ -3,6 +3,9 @@ require
 
 Ongoing effort to simplify Oskari programming
 
+Long term goal
+- less code and less verbose code
+
 Previously: 
 - builder pattern to bundles, classes, flyouts to all Oskari extensions to reduce 
  lines of code required to instantiate a bundle.
