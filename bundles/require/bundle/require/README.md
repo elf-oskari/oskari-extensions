@@ -7,10 +7,10 @@ Long term goal
 - less code and less verbose code
 
 Previously: 
-- builder pattern to bundles, classes, flyouts to all Oskari extensions to reduce 
- lines of code required to instantiate a bundle.
-- good defaults to any property, constructor, property
-- reduce required usage of class identifiers with build pattern
+- apply builder pattern to bundles, classes and eventually to any Oskari operations to reduce 
+ lines of code required
+- add good defaults to any property, constructor, property
+- reduce usage of lengthy class identifiers with build pattern
 
 To be implemented
 - simplified request handler registrations 
