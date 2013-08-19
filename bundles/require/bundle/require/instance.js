@@ -1,17 +1,13 @@
-
 define(["oskari"], function(Oskari) {
 
-	return Oskari.clazz.define('Oskari.sample.bundle.require.RequireBundleInstance', function() {
-
-	}, {
+	return Oskari.cls('Oskari.sample.bundle.require.RequireBundleInstance').
+	  extend("Oskari.userinterface.extension.DefaultExtension").trait({
 		"eventHandlers" : {
 			"AfterMapMoveEvent" : function() {
-
+				/* */
 			}
 		}
-
-	}, {
-		"extend" : ["Oskari.userinterface.extension.DefaultExtension"]
-	});
+	  }
+	);
 
 });

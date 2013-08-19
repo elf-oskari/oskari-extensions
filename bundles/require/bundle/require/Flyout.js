@@ -1,8 +1,7 @@
 define(["oskari", "jquery"], function(Oskari, jQuery) {
 
-	return Oskari.clazz.define("Oskari.sample.bundle.require.RequireFlyout", function() {
-
-	}, {
+	return Oskari.cls("Oskari.sample.bundle.require.RequireFlyout").
+	  extend("Oskari.userinterface.extension.DefaultFlyout").trait({
 		startPlugin : function() {
 			var el = this.getEl();
 
@@ -15,8 +14,7 @@ define(["oskari", "jquery"], function(Oskari, jQuery) {
 
 		stopPlugin : function() {
 		}
-	}, {
-		"extend" : ["Oskari.userinterface.extension.DefaultFlyout"]
-	});
+	  }
+	);
 
 })

@@ -1,26 +1,14 @@
 define(["oskari", "./instance", "./Flyout", "./locale/fi", "./locale/en"], function(Oskari, instanceClazz, flyoutClazz) {
 
 	var cid = 'require';
-	var cls = Oskari.clazz.define("Oskari.sample.bundle.require.RequireBundle", function() {
-
-	}, {
+	
+	var cls = Oskari.cls("Oskari.sample.bundle.require.RequireBundle").
+	  trait({
 		"create" : function() {
-			return Oskari.clazz.create(instanceClazz, cid, flyoutClazz);
-		},
-		"update" : function() {
-
+			return Oskari.clazz.create(instanceClazz.name(), cid, flyoutClazz.name());
 		}
-	}, {
-
-		"protocol" : ["Oskari.bundle.Bundle", "Oskari.mapframework.bundle.extension.ExtensionBundle"],
-		"bundle" : {
-			"manifest" : {
-				"Bundle-Identifier" : cid
-			}
-		}
-	});
-
-	Oskari.bundle_manager.installBundleClass(cid, cls);
+	  }).bundle('require'); 
 
 	return cls;
+	
 });
