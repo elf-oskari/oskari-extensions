@@ -1,6 +1,6 @@
 Oskari.registerLocalization({
-    "lang" : "sv",
-    "key" : "require",
+    "lang" : "en",
+    "key" : "requireminimal",
     "value" : {
         "title" : "Hello World",        
         "tile" : {

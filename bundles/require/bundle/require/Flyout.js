@@ -10,9 +10,6 @@ define(["oskari", "jquery"], function(Oskari, jQuery) {
 
 			el.append(msg);
 
-		},
-
-		stopPlugin : function() {
 		}
 	  }
 	);

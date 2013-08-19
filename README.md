@@ -81,12 +81,12 @@ but shared in the spirit of free software though.
 # Really want to use these 
  
  Include in your JS build appsetup.json or load with oskari dev mode
- 
+ ```
   Oskari.setLoaderMode('dev');
   Oskari.setPreloaded(false);
   Oskari.playBundle( {
    /bundle spec including path to package dir/
    /sample bundle specs in /applications subfolders for copy-paste-modifying bundle specs/
   }); 
- 
+ ```
  
