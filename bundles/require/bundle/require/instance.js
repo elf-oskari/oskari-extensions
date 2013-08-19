@@ -1,4 +1,4 @@
-define(["oskari", "./SampleEvent", "./SampleRequest"], function(Oskari, sampleEvent, sampleRequest) {
+define(["oskari", "./SampleEvent"], function(Oskari, sampleEvent, sampleRequest) {
 
 	return Oskari.cls('Oskari.sample.bundle.require.RequireBundleInstance').
 		extend("Oskari.userinterface.extension.DefaultExtension").
@@ -7,7 +7,7 @@ define(["oskari", "./SampleEvent", "./SampleRequest"], function(Oskari, sampleEv
 				/* */
 				console.log("Events AfterMapMoveEvent");
 			}
-		}).
-		requests([sampleRequest]);
+		});
+		
 
 });
