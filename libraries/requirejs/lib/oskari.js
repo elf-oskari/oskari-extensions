@@ -2492,9 +2492,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 			};
 
 			rv.me = rv;
-			rv.clazzName = clazzName, rv.trait = function(protoProps, traitsName) {
+			rv.clazzName = clazzName, rv.category = function(protoProps, categorysName) {
 				var me = this;
-				cs.category(me.clazzName, traitsName || '____', protoProps);
+				cs.category(me.clazzName, categorysName || '____', protoProps);
 
 				return rv;
 			}, rv.extend = function(clsss) {
@@ -2522,7 +2522,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 			},			
 			rv.bundle = function(bid) {
 				var orgRv = this.me;
-				orgRv.trait({ update: function() {} } );
+				orgRv.category({ update: function() {} } );
 				orgRv.protocol(["Oskari.bundle.Bundle", "Oskari.mapframework.bundle.extension.ExtensionBundle"]);
 				orgRv.metadata().bundle = {
 					  "manifest" : {
