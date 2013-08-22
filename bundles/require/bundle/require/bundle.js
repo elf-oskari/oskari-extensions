@@ -1,11 +1,9 @@
-define(["oskari", "./instance", "./Flyout", "./locale/fi", "./locale/en"], function(Oskari, instanceClazz, flyoutClazz) {
+define(["oskari", "./instance", "./Flyout", "./locale/fi", "./locale/en"], function(Oskari, instanceMod, flyoutMod) {
 
-	return Oskari.cls("Oskari.sample.bundle.require.RequireBundle").
-	  category({
+	return Oskari.bundleCls("Oskari.sample.bundle.require.RequireBundle", 'require').category({
 		"create" : function() {
-			return Oskari.clazz.create(instanceClazz.name(), 'require', flyoutClazz.name());
+			return Oskari.clazz.create(instanceMod.name(), 'require', flyoutMod.name());
 		}
-	  }).bundle('require'); 
+	});
 
-	
 });

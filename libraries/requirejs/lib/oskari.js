@@ -521,6 +521,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
 			this.pullDown(pdefsp);
 			this.pushDown(pdefsp);
+			
+			return pdefsp;
 		},
 		/**
 		 * @method inherit
@@ -585,6 +587,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 			superClazz._composition.subClazz[args[0]] = subClazz;
 			subClazz._composition.superClazz = superClazz;
 			this.pullDown(subClazz);
+			return subClazz;
 		},
 		composition : function() {
 			var cdef = arguments[0];
@@ -2478,66 +2481,169 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 			blMimeTypeToPlugin[mimeType] = plugin;
 		},
 
-		/* O2 */
+		/* O2 builders and helpers */
+		/* NOTE REQUIRES SOME CHANGES TO CLAZZ IMPL return pdefsp etc calls */
 
 		cls : function(clazzName, constructor, protoProps, metas) {
 
-			cs.define(clazzName, constructor ||
+			var clazzInfo = cs.define(clazzName, constructor ||
 			function() {
 			}, protoProps || {}, metas || {});
 
-			var rv = {
-				slicer : Array.prototype.slice
-
+			var modspec = {
+				slicer : Array.prototype.slice,
+				clazzInfo : clazzInfo
 			};
 
-			rv.me = rv;
-			rv.clazzName = clazzName, rv.category = function(protoProps, categorysName) {
+		
+			modspec.clazzName = clazzName, modspec.category = function(protoProps, traitsName) {
 				var me = this;
-				cs.category(me.clazzName, categorysName || '____', protoProps);
-
-				return rv;
-			}, rv.extend = function(clsss) {
-				cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
-				return rv.me;
-			}, rv.construct = function(props) {
+				var clazzInfo = cs.category(me.clazzName, traitsName || '____', protoProps);
+				this.clazzInfo = clazzInfo; 
+				return modspec;
+			}, modspec.extend = function(clsss) {
+				var clazzInfo = cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
+				this.clazzInfo = clazzInfo;
+				return this;
+			}, modspec.construct = function(props) {
 				var me = this;
 				return cs.construct(me.clazzName, props);
-			}, rv.create = function() {
+			}, modspec.create = function() {
 				var me = this;
 				var args = me.slicer.apply(arguments, [0]);
 				args.unshift(me.clazzName);
 				return cs.create.apply(cs, args);
-			}, rv.name = function() {
-				return rv.clazzName;
-			}, rv.protocol = function() {
+			}, modspec.name = function() {
+				return modspec.clazzName;
+			}, modspec.protocol = function() {
 				var me = this;
 				var args = me.slicer.apply(arguments, [0]);
 				args.unshift(me.clazzName);
 				cs.protocol.apply(cs, args);
-				return rv;				
-			}, rv.metadata = function() {
+				return modspec;
+			}, modspec.metadata = function() {
 				var me = this;
 				return cs.metadata(me.clazzName);
-			},			
-			rv.bundle = function(bid) {
-				var orgRv = this.me;
-				orgRv.category({ update: function() {} } );
-				orgRv.protocol(["Oskari.bundle.Bundle", "Oskari.mapframework.bundle.extension.ExtensionBundle"]);
-				orgRv.metadata().bundle = {
-					  "manifest" : {
+			}, modspec.bundle = function(bid) {
+				var orgmodspec = this;
+				orgmodspec.category({
+					update : function() {
+					}
+				});
+				orgmodspec.protocol(["Oskari.bundle.Bundle", "Oskari.mapframework.bundle.extension.ExtensionBundle"]);
+				orgmodspec.metadata().bundle = {
+					"manifest" : {
 						"Bundle-Identifier" : bid
-				      }
-	            };
-				
- 			   bm.installBundleClass(bid, orgRv.name());
-			}
+					}
+				};
 
-			return rv;
+				bm.installBundleClass(bid, orgmodspec.name());
+			}, modspec.events = function(events) {
+				var orgmodspec = this;
+				orgmodspec.category({
+					eventHandlers : events,
+					onEvent : function(event) {
+						var me = this;
+						var handler = me.eventHandlers[event.getName()];
+						if (!handler) {
+							return;
+						}
+
+						return handler.apply(this, [event]);
+					}
+				});
+				return orgmodspec;
+			}, modspec.builder = function() {
+				var me = this;
+				return cs.builder(me.clazzName);
+			};
+
+			return modspec;
+		},
+
+		sandbox : function(sandboxName) {
+
+			var sandboxref = {
+				sandbox : ga.apply(cs, [sandboxName || 'sandbox'])
+			};
+
+			sandboxref.on = function(instance) {
+				var me = this;
+				if (instance.eventHandlers) {
+					for (p in instance.eventHandlers) {
+						me.sandbox.registerForEventByName(instance, p);
+					}
+				}
+				if (instance.requestHandlers) {
+					for (r in instance.requestHandlers ) {
+						me.sandbox.addRequestHandler(r, reqHandlers[r]);
+					}
+				}
+			}, sandboxref.off = function(instance) {
+				if (instance.eventHandlers) {
+					for (p in instance.eventHandlers) {
+						me.sandbox.unregisterFromEventByName(instance, p);
+					}
+				}
+				if (instance.requestHandlers) {
+					for (r in instance.requestHandlers ) {
+						me.sandbox.removeRequestHandler(r, reqHandlers[r]);
+					}
+				}
+			},
+			
+			sandboxref.slicer = Array.prototype.slice,
+			
+			sandboxref.notify = function(eventName) {
+				var me = this;
+				var sandbox = me.sandbox;
+				var builder = me.sandbox.getEventBuilder(eventName);
+				var args = me.slicer.apply(arguments,[1]);
+				var eventObj = eventBuilder.apply(eventBuilder,args);
+				return sandbox.notifyAll(eventObj);
+			};
+			
+
+			return sandboxref;
+
 		}
 	};
 
+	bndl.eventCls = function(eventName, constructor, protoProps, metas) {
+		var clazzName = ['Oskari','event','registry',eventName].join('.');
+		var rv = bndl.cls(clazzName, constructor, protoProps, metas);
+
+		rv.category({
+			getName : function() {
+				return eventName;
+			}
+		}).protocol(['Oskari.mapframework.event.Event']);
+		
+		rv.eventName = eventName;
+		
+		return rv;
+	};
+	bndl.requestCls = function(requestName, constructor, protoProps, metas) {
+		var clazzName = ['Oskari','request','registry',requestName].join('.');
+		var rv = bndl.cls(clazzName, constructor, protoProps, metas);
+
+		rv.category({
+			getName : function() {
+				return requestName;
+			}
+		}).protocol(['Oskari.mapframework.request.Request']);
+		
+		rv.requestName = requestName;
+		
+		return rv;
+	};
 	
+	bndl.bundleCls = function(clazzName, bnldId ) {
+		var rv = bndl.cls(clazzName);
+		rv.bundle(bnldId);
+		
+		return rv;
+	};
 
 	/**
 	 * Let's register Oskari as a Oskari global

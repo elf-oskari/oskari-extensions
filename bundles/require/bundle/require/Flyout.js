@@ -1,7 +1,6 @@
 define(["oskari", "jquery"], function(Oskari, jQuery) {
 
-	return Oskari.cls("Oskari.sample.bundle.require.RequireFlyout").
-	  extend("Oskari.userinterface.extension.DefaultFlyout").category({
+	return Oskari.cls("Oskari.sample.bundle.require.RequireFlyout").extend("Oskari.userinterface.extension.DefaultFlyout").category({
 		startPlugin : function() {
 			var el = this.getEl();
 
@@ -10,8 +9,11 @@ define(["oskari", "jquery"], function(Oskari, jQuery) {
 
 			el.append(msg);
 
+		},
+		showMapMove : function() {
+
+			this.getEl().append("- Events AfterMapMoveEvent\n");
 		}
-	  }
-	);
+	});
 
 })

@@ -1,13 +1,16 @@
-define(["oskari", "./SampleEvent"], function(Oskari, sampleEvent, sampleRequest) {
+define(["oskari", "./SampleEvent"], function(Oskari, sampleEvent) {
 
 	return Oskari.cls('Oskari.sample.bundle.require.RequireBundleInstance').
-		extend("Oskari.userinterface.extension.DefaultExtension").
-		events({
+		category({
+			func : function() {
+			}
+		}).extend(
+			"Oskari.userinterface.extension.DefaultExtension"
+		).events({
 			"AfterMapMoveEvent" : function() {
-				/* */
-				console.log("Events AfterMapMoveEvent");
+				this.getPlugins()['Oskari.userinterface.Flyout'].showMapMove();
 			}
 		});
-		
 
 });
+
