@@ -1,36 +1,46 @@
 define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
 
+	var flyoutMod = Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").
+		extend("Oskari.userinterface.extension.DefaultFlyout").
+		category({
+
+		  startPlugin : function() {
+
+			var el = this.getEl();
+			var loc = this.getLocalization();
+			var msg = loc.message;
+
+			el.append(msg);
+
+		  },
+
+		  showMapMove : function() {
+			this.getEl().append("- Events AfterMapMoveEvent\n");
+		  }
+	});
+
 	/* bundle instance is a class that starts/stops bundle 'engines' */
 	var instanceMod = Oskari.cls('Oskari.sample.bundle.requireminimal.RequireBundleInstance').
-		extend("Oskari.userinterface.extension.DefaultExtension").
-		events({
-			"AfterMapMoveEvent" : function() {
+	  extend("Oskari.userinterface.extension.EnhancedExtension").
+	  category({
 
-				this.getPlugins()['Oskari.userinterface.Flyout'].showMapMove();
-			}
-		});
+		startPlugin : function() {
+			this.getPlugins()['Oskari.userinterface.Flyout'] = flyoutMod.create(this, this.getLocalization()['flyout']);
+			this.getPlugins()['Oskari.userinterface.Tile'] = Oskari.cls('Oskari.userinterface.extension.DefaultTile').create(this, this.getLocalization()['tile']);
 
-	/* flyout is an optional view for bundle operations */
-	var flyoutMod = Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").
-		extend("Oskari.userinterface.extension.DefaultFlyout").category({
-			startPlugin : function() {
-				var el = this.getEl();
-	
-				var loc = this.getLocalization();
-				var msg = loc.message;
+		}
+	  }).events({
+		"AfterMapMoveEvent" : function() {
 
-				el.append(msg);
+			this.getPlugins()['Oskari.userinterface.Flyout'].showMapMove();
+		}
+	});
 
-			},	
-			showMapMove : function() {
-
-				this.getEl().append("- Events AfterMapMoveEvent\n");
-			}
-		});
-
-	return Oskari.bundleCls("Oskari.sample.bundle.requireminimal.RequireBundle", 'requireminimal').category({
+	return Oskari.bundleCls("Oskari.sample.bundle.requireminimal.RequireBundle", 'requireminimal').
+	  category({
 		create : function() {
-			return Oskari.clazz.create(instanceMod.name(), 'requireminimal', flyoutMod.name());
+			var inst = instanceMod.create('requireminimal');
+			return inst;
 		}
 	});
 

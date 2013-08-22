@@ -1,8 +1,10 @@
-define(["oskari", "./instance", "./Flyout", "./locale/fi", "./locale/en"], function(Oskari, instanceMod, flyoutMod) {
+define(["oskari", "./instance"], function(Oskari, instanceMod) {
 
-	return Oskari.bundleCls("Oskari.sample.bundle.require.RequireBundle", 'require').category({
-		"create" : function() {
-			return Oskari.clazz.create(instanceMod.name(), 'require', flyoutMod.name());
+	return Oskari.bundleCls("Oskari.sample.bundle.require.RequireBundle", 'require').
+	  category({
+		create : function() {
+			var inst = instanceMod.create('require');
+			return inst;
 		}
 	});
 

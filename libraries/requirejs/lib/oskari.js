@@ -365,7 +365,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
 			if (pdefsp) {
 				// update constrcutor
-				pdefsp._constructor = args[1];
+				if (args[1]) {
+					pdefsp._constructor = args[1];
+				}
 
 				// update prototype
 				var catFuncs = args[2];
@@ -377,7 +379,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 					prot[p] = pi;
 				}
 				var catName = cdef;
-				pdefsp._category[catName] = catFuncs;
+				if (catFuncs) {
+					pdefsp._category[catName] = catFuncs;
+				}
 				if (args.length > 3) {
 
 					var extnds = args[3].extend;
@@ -427,13 +431,12 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 				prot[p] = pi;
 			}
 			var catName = cdef;
-			pdefsp._category[catName] = catFuncs;
+			if (catFuncs) {
+				pdefsp._category[catName] = catFuncs;
+			}
 
 			this.impl.inheritance[cdef] = compo;
 			pdef[sp] = pdefsp;
-
-			var catName = cdef;
-			pdefsp._category[catName] = args[2];
 
 			if (args.length > 3) {
 
@@ -517,11 +520,13 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 				prot[p] = pi;
 			}
 
-			pdefsp._category[catName] = catFuncs;
+			if (catFuncs) {
+				pdefsp._category[catName] = catFuncs;
+			}
 
 			this.pullDown(pdefsp);
 			this.pushDown(pdefsp);
-			
+
 			return pdefsp;
 		},
 		/**
@@ -1234,7 +1239,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
 				reqs.push(fn);
 			}
-			console.log("OSKARI.REQUIRE", reqs);
+			/*console.log("OSKARI.REQUIRE", reqs);*/
 			require(reqs, function() {
 				me.callback();
 				me.manager.notifyLoaderStateChanged(me, true)
@@ -2484,22 +2489,27 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 		/* O2 builders and helpers */
 		/* NOTE REQUIRES SOME CHANGES TO CLAZZ IMPL return pdefsp etc calls */
 
-		cls : function(clazzName, constructor, protoProps, metas) {
+		cls : function(clazzName, ctor, protoProps, metas) {
 
-			var clazzInfo = cs.define(clazzName, constructor ||
-			function() {
-			}, protoProps || {}, metas || {});
+			var clazzInfo = cs.lookup(clazzName);
+
+			if (clazzInfo && clazzInfo._constructor && !ctor) {
+				// lookup
+			} else {
+				clazzInfo = cs.define(clazzName, ctor ||
+				function() {
+				}, protoProps, metas || {});
+			}
 
 			var modspec = {
 				slicer : Array.prototype.slice,
 				clazzInfo : clazzInfo
 			};
 
-		
 			modspec.clazzName = clazzName, modspec.category = function(protoProps, traitsName) {
 				var me = this;
 				var clazzInfo = cs.category(me.clazzName, traitsName || '____', protoProps);
-				this.clazzInfo = clazzInfo; 
+				this.clazzInfo = clazzInfo;
 				return modspec;
 			}, modspec.extend = function(clsss) {
 				var clazzInfo = cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
@@ -2508,6 +2518,11 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 			}, modspec.construct = function(props) {
 				var me = this;
 				return cs.construct(me.clazzName, props);
+			}, modspec.create = function() {
+				var me = this;
+				var builder = cs.builder(me.clazzName);
+
+				return builder.apply(builder, arguments);
 			}, modspec.create = function() {
 				var me = this;
 				var args = me.slicer.apply(arguments, [0]);
@@ -2529,7 +2544,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 				orgmodspec.category({
 					update : function() {
 					}
-				});
+				}, '___bundle');
 				orgmodspec.protocol(["Oskari.bundle.Bundle", "Oskari.mapframework.bundle.extension.ExtensionBundle"]);
 				orgmodspec.metadata().bundle = {
 					"manifest" : {
@@ -2551,7 +2566,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
 						return handler.apply(this, [event]);
 					}
-				});
+				}, '___eventes');
 				return orgmodspec;
 			}, modspec.builder = function() {
 				var me = this;
@@ -2590,19 +2605,14 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 						me.sandbox.removeRequestHandler(r, reqHandlers[r]);
 					}
 				}
-			},
-			
-			sandboxref.slicer = Array.prototype.slice,
-			
-			sandboxref.notify = function(eventName) {
+			}, sandboxref.slicer = Array.prototype.slice, sandboxref.notify = function(eventName) {
 				var me = this;
 				var sandbox = me.sandbox;
 				var builder = me.sandbox.getEventBuilder(eventName);
-				var args = me.slicer.apply(arguments,[1]);
-				var eventObj = eventBuilder.apply(eventBuilder,args);
+				var args = me.slicer.apply(arguments, [1]);
+				var eventObj = eventBuilder.apply(eventBuilder, args);
 				return sandbox.notifyAll(eventObj);
 			};
-			
 
 			return sandboxref;
 
@@ -2610,38 +2620,38 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 	};
 
 	bndl.eventCls = function(eventName, constructor, protoProps, metas) {
-		var clazzName = ['Oskari','event','registry',eventName].join('.');
+		var clazzName = ['Oskari', 'event', 'registry', eventName].join('.');
 		var rv = bndl.cls(clazzName, constructor, protoProps, metas);
 
 		rv.category({
 			getName : function() {
 				return eventName;
 			}
-		}).protocol(['Oskari.mapframework.event.Event']);
-		
+		}, '___event').protocol(['Oskari.mapframework.event.Event']);
+
 		rv.eventName = eventName;
-		
+
 		return rv;
 	};
 	bndl.requestCls = function(requestName, constructor, protoProps, metas) {
-		var clazzName = ['Oskari','request','registry',requestName].join('.');
+		var clazzName = ['Oskari', 'request', 'registry', requestName].join('.');
 		var rv = bndl.cls(clazzName, constructor, protoProps, metas);
 
 		rv.category({
 			getName : function() {
 				return requestName;
 			}
-		}).protocol(['Oskari.mapframework.request.Request']);
-		
+		}, '___request').protocol(['Oskari.mapframework.request.Request']);
+
 		rv.requestName = requestName;
-		
+
 		return rv;
 	};
-	
-	bndl.bundleCls = function(clazzName, bnldId ) {
+
+	bndl.bundleCls = function(clazzName, bnldId) {
 		var rv = bndl.cls(clazzName);
 		rv.bundle(bnldId);
-		
+
 		return rv;
 	};
 
