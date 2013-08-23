@@ -35,19 +35,20 @@
  */
 require.config({
 
-	/* the base is set to requirejs lib to help requiring 3rd party libs */
-	"baseUrl" : "../../../libraries/requirejs/lib",
+    /* the base is set to requirejs lib to help requiring 3rd party libs */
+    "baseUrl" : "../../../libraries/requirejs/lib",
 
-	/* some path shortcuts to ease declarations */
-	paths : {
-		_libraries_ : '../../../libraries',
-		_applications_ : '../../../applications',
-		_packages_ : '../../../packages'
-	}
+    /* some path shortcuts to ease declarations */
+    paths : {
+        _bundles_ : '../../../bundles',
+        _libraries_ : '../../../libraries',
+        _applications_ : '../../../applications',
+        _packages_ : '../../../packages'
+    }
 
 });
 define("jquery", [], function() {
-	return jQuery;
+    return jQuery;
 });
 
 /*
@@ -69,23 +70,40 @@ require(["jquery", "oskari", "domReady!"],
  */
 function($, Oskari) {
 
-	/* 2) application setup with requirejs json plugin */
-	require({
-		urlArgs : undefined // "bust=" + (new Date()).getTime() /* bust Cache for dev */
-	}, ["json!_applications_/oskari2/minimal/appsetup.json", "json!_applications_/oskari2/minimal/config.json"],
-	/* ... now we have appSetup, appConfig and DOM */
-	function(appSetup, appConfig, doc) {
+    /* 2) application setup with requirejs json plugin */
+    require({
+        urlArgs : undefined // "bust=" + (new Date()).getTime() /* bust Cache for dev */
+    }, ["json!_applications_/oskari2/minimal/appsetup.json", "json!_applications_/oskari2/minimal/config.json"],
+    /* ... now we have appSetup, appConfig and DOM */
+    function(appSetup, appConfig, doc) {
 
-		/* 3) (requirejsified) Oskari loader is used load the app based on appSetup JSON */
-		var app = Oskari.app;
-		Oskari.setLang('fi');
-		app.setApplicationSetup(appSetup);
-		app.setConfiguration(appConfig);
-		Oskari.setPreloaded(false);
-		Oskari.setLoaderMode('default');
-		Oskari.setSupportBundleAsync(false);
-		app.startApplication(function(startupInfos) {
+        /* 3) (requirejsified) Oskari loader is used load the app based on appSetup JSON */
+        var app = Oskari.app;
+        Oskari.setLang('fi');
+        app.setApplicationSetup(appSetup);
+        app.setConfiguration(appConfig);
+        Oskari.setPreloaded(false);
+        Oskari.setLoaderMode('default');
+        Oskari.setSupportBundleAsync(false);
+        app.startApplication(function(startupInfos) {
 
-		});
-	})
+            /* let's simulate loading with require for those enabled */
+           Oskari.setLoaderMode('static');
+           Oskari.setPreloaded(false);
+
+            require(["_bundles_/require/bundle/require/bundle", 
+            "_bundles_/require/bundle/requiresf/bundle", 
+            "_bundles_/require/bundle/requireminimal/bundle", 
+            "_bundles_/require/bundle/requirenr/bundle", 
+            "_bundles_/require/bundle/requireminloc/bundle"], function(rclassic, rsinglefile, rminimal, rnorules, rminlinesofcode) {
+            	
+            	rclassic.start();
+            	rsinglefile.start();
+            	rminimal.start();
+            	rnorules.start();
+            	rminlinesofcode.start();
+
+            })
+        });
+    })
 });

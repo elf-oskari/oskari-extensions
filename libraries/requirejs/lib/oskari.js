@@ -1486,14 +1486,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          *
          * a loggin and debugging function
          */
-        "alert" : function(what) {
-            // log(what);
-            /*
-             * var d = document.createElement('div');
-             * d.appendChild(document.createTextNode(what)); var del =
-             * document.getElementById("debug"); if (!del) return;
-             * del.appendChild(d);
-             */
+        "alert" : function(what) {        
             logMsg(what);
         },
         /**
@@ -1511,6 +1504,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         "self" : function() {
             return this;
         },
+        
+        /* ! NOTE ! implid and bundleid ARE NOT TO BE CONFUSED WITH FACADE'S INSTANCEID OR instances arrays indexes */
+        /* ! NOTE ! implid AND bundleid AS WELL AS bnldImpl are most likely always the same value */
+        
         /**
          * @method install
          * @param implid
@@ -1578,7 +1575,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             this.install(implid, bp, srcs, bundleMetadata);
 
         },
-         /**
+        /**
          * @method installBundlePdefs
          * @param implid
          * @param bp
@@ -1892,7 +1889,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * @param env
          * @returns
          *
-         * Creates a Bundle
+         * Creates a Bundle (NOTE NOT an instance of bundle)
+         * implid, bundleid most likely same value 
          */
         "createBundle" : function(implid, bundleid) {
             // sets up bundle runs the registered func to instantiate bundle
@@ -2676,7 +2674,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 return orgmodspec;
             }, modspec.builder = function() {
                 var me = this;
-                return cs.builder(me.clazzName);
+                return cs.builderFromPdefsp(me.clazzInfo);
             };
 
             return modspec;
@@ -2723,9 +2721,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             return sandboxref;
 
         },
-        
-        loc: function() {
-        	return bndl.registerLocalization.apply(bndl,arguments);
+
+        loc : function() {
+            return bndl.registerLocalization.apply(bndl, arguments);
         }
     };
 
@@ -2791,13 +2789,38 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             }
         });
         bm.installBundlePdefsp(bnldId, rv.clazzInfo);
-        
+
         rv.___bundleIdentifier = bnldId;
         rv.loc = function(props) {
-        	props.key = rv.___bundleIdentifier;
-        	bndl.registerLocalization(props);
-        	return rv;
-        }
+            props.key = rv.___bundleIdentifier;
+            bndl.registerLocalization(props);
+            return rv;
+        }, rv.start = function(instanceid) {
+            var bundleid = this.___bundleIdentifier;
+            console.log(bundleid);
+
+            if (!fcd.bundles[bundleid]) {
+                var b = bm.createBundle(bundleid, bundleid);
+                fcd.bundles[bundleid] = b;
+            }
+
+            var bi = bm.createInstance(bundleid);
+            fcd.bundleInstances[bundleid] = bi;
+
+            var configProps = fcd.getBundleInstanceConfigurationByName(bundleid);
+            if (configProps) {
+                for (ip in configProps) {
+                    bi[ip] = configProps[ip];
+                }
+            }
+            bi.start();
+
+            return bi;
+        }, rv.stop = function() {
+            var bundleid = this.___bundleIdentifier;
+            var bi = fcd.bundleInstances[bundleid];
+            return bi.stop();
+        };
 
         return rv;
     };

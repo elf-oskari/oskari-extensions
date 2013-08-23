@@ -79,21 +79,7 @@
             },
             "Require-Bundle-Instance" : [  ]
         }
-      }, {
-			"instanceProps": {},
-			"title": "require",
-			"bundleinstancename": "require",		
-			"bundlename": "require",
-			"metadata": {
-				"Import-Bundle": {
-					"require": {
-						"bundlePath": "../../../bundles/require/bundle/"
-					}
-				},
-				"Require-Bundle-Instance": []
-			}
-		}
-		
+      }
       
   ]
 }
