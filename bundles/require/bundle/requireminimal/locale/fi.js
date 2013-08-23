@@ -2,21 +2,14 @@ Oskari.registerLocalization({
     "lang" : "fi",
     "key" : "requireminimal",
     "value" : {
-        "title" : "require (singlefile)",
+        "title" : "require (minimum)",
         "desc" : "",
         "tile" : {
-            "title" : "require SF"
+            "title" : "require-min"
         },
         "flyout" : {
-            "title" : "require (singlefile)",
-            "message" : "require (singlefile)",
-            "clickToRequest" : {
-            	"button" : "Click to issue a request",
-            	"text" : "Request from Other bundle"
-            },         
-            
-            "mapmove" : "Map Moved to",
-            "eventReceived" : "Event received"
+            "title" : "require (minimum)",
+            "message" : "require based 'classic' implementation with only the minimum",
         }
     }
 });

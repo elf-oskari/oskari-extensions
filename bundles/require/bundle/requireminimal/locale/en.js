@@ -8,14 +8,7 @@ Oskari.registerLocalization({
         },
         "flyout" : {
             "title" : "Hello World!",
-            "message" : "!!!Hello World!!!!",
-            "clickToRequest" : {
-            	"button" : "Click to issue a request",
-            	"text" : "Request from Self"
-            },         
-            
-            "mapmove" : "Map Moved to",
-            "eventReceived" : "Event received"
+            "message" : "!!!Hello World!!!!"
         }
     }
 });

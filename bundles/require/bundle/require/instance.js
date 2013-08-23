@@ -23,7 +23,13 @@ define(["oskari",
             var tile = tileCls.create(this, this.getLocalization()['tile'])
             this.setTile(tile);
 
+        },
+        
+        /* cleanup resources */  
+        stopPlugin : function() {
+		
         }
+        
     }).events({
         /* loose coupling is used for requests and events as identifiers are used to bind to implementation */
        

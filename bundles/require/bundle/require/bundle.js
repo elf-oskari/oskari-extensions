@@ -1,7 +1,7 @@
 
 define(["oskari", "./instance"], function(Oskari, instanceCls) {
 
-    return Oskari.bundleCls("Oskari.sample.bundle.require.RequireBundle", 'require').
+    return Oskari.bundleCls('require', "Oskari.sample.bundle.require.RequireBundle").
     	category({
         	create : function() {
             	var inst = instanceCls.create('require');

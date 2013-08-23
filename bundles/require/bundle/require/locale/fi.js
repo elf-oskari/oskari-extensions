@@ -9,7 +9,7 @@ Oskari.registerLocalization({
         },
         "flyout" : {
             "title" : "require",
-            "message" : "- RequireJS -",
+            "message" : "require based 'classic' implementation with separate modules for each part. introducing ui, flyout, tile, event and request handling",
             "clickToRequest" : {
             	"button" : "Click to issue a request",
             	"text" : "Request from Self"

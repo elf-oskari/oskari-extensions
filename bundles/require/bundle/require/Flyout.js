@@ -5,7 +5,9 @@ define(["oskari", "jquery"], function(Oskari, jQuery, sampleRequestCls) {
         /* set up the 'ui' in given element */
         startPlugin : function() {
 
-            var me = this, el = me.getEl(), loc = me.getLocalization() ;
+            var me = this, el = me.getEl(), loc = me.getLocalization(), msg = loc.message ;
+            
+            el.append(msg);
 
             /* let's send a sample request - to self this time */
             var elBtn = jQuery(['<button>', loc.clickToRequest.button, '</button>'].join(''));
