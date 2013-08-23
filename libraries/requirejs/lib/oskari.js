@@ -2568,6 +2568,21 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 					}
 				}, '___eventes');
 				return orgmodspec;
+			}, modspec.requests = function(requests) {
+				var orgmodspec = this;
+				orgmodspec.category({
+					requestHandlers : requests,
+					onRequest : function(request) {
+						var me = this;
+						var handler = me.requestHandlers[request.getName()];
+						if (!handler) {
+							return;
+						}
+
+						return handler.apply(this, [request]);
+					}
+				}, '___requestes');
+				return orgmodspec;
 			}, modspec.builder = function() {
 				var me = this;
 				return cs.builder(me.clazzName);
@@ -2619,9 +2634,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 		}
 	};
 
-	bndl.eventCls = function(eventName, constructor, protoProps, metas) {
+	bndl.eventCls = function(eventName, constructor, protoProps ) {
 		var clazzName = ['Oskari', 'event', 'registry', eventName].join('.');
-		var rv = bndl.cls(clazzName, constructor, protoProps, metas);
+		var rv = bndl.cls(clazzName, constructor, protoProps, { protocol: ['Oskari.mapframework.event.Event'] });
 
 		rv.category({
 			getName : function() {
@@ -2633,17 +2648,35 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
 		return rv;
 	};
-	bndl.requestCls = function(requestName, constructor, protoProps, metas) {
+
+
+	bndl.requestCls = function(requestName, constructor, protoProps ) {
 		var clazzName = ['Oskari', 'request', 'registry', requestName].join('.');
-		var rv = bndl.cls(clazzName, constructor, protoProps, metas);
+		var rv = bndl.cls(clazzName, constructor, protoProps, { protocol: ['Oskari.mapframework.request.Request'] });
 
 		rv.category({
 			getName : function() {
 				return requestName;
 			}
-		}, '___request').protocol(['Oskari.mapframework.request.Request']);
+		}, '___request');
 
 		rv.requestName = requestName;
+
+		return rv;
+	};
+
+	/* note restriction: one for each request - no overrides */	
+	bndl.requestHandlerCls =  function(requestCls, impl) {
+		var clazzName = ['Oskari', 'requesthandler', 'registry', requestCls.getName()].join('.');
+		var rv = bndl.cls(clazzName);
+
+		rv.category({
+			handleRequest : function(core, request) {
+				return impl(request);
+			}			
+		}, '___requestHandler').protocol(['Oskari.mapframework.core.RequestHandler']);
+
+		rv.requestName = requestCls.getName();
 
 		return rv;
 	};
