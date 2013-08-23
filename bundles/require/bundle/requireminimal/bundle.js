@@ -1,60 +1,72 @@
+
+
 define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
-
-	// we'll use the default tile class for this sample
-	var tileCls = Oskari.cls('Oskari.userinterface.extension.DefaultTile');
 	
-	// we'll extend the default flyout for this sample 
-	var flyoutCls = Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").extend("Oskari.userinterface.extension.DefaultFlyout").category({
-
-		startPlugin : function() {
-
-			var el = this.getEl();
-			var loc = this.getLocalization();
-			var msg = loc.message;
-
-			el.append(msg);
-
-		},
-
-		showMapMove : function() {
-			this.getEl().append("- Events AfterMapMoveEvent\n");
-		}
-	});
+	/* This module declares a tile, flyout and instance for a bundle */
 	
-	// we'll extend the	EnhancedExtension base class to setup this bundle operations	
-	var instanceCls = Oskari.cls('Oskari.sample.bundle.requireminimal.RequireBundleInstance').
-		extend("Oskari.userinterface.extension.EnhancedExtension").category({
+	/* 1) */
+    /* we'll use the default tile class for this sample */
+    var tileCls = Oskari.cls('Oskari.userinterface.extension.DefaultTile');
 
-		startPlugin : function() {
+	/* 2) */
+    /* we'll extend the default flyout for this sample */
+    var flyoutCls = Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").
+    	extend("Oskari.userinterface.extension.DefaultFlyout").category({
 
-			// let's create an instance of flyout clazz and register it to the zystem
-			var flyout = flyoutCls.create(this, this.getLocalization()['flyout']);
-			this.setFlyout(flyout);
+        startPlugin : function() {
 
-			// let's create an instance of tile clazz and register it to the zystem
-			var tile = tileCls.create(this, this.getLocalization()['tile'])
-			this.setTile(tile);
+            var el = this.getEl();
+            var loc = this.getLocalization();
+            var msg = loc.message;
 
-		}
-		
-	}).events({
-		// we'll listen to some Oskari events 
-			
-		"AfterMapMoveEvent" : function() {
+            el.append(msg);
 
-			this.getFlyout().showMapMove();
+        },
 
-		}
-	});
+        showMapMove : function() {
+            this.getEl().append("- Events AfterMapMoveEvent\n");
+        }
+    });
 
-	// we'll register the Bundle with a bundleCls call - bundle will be instantiated and started by the application 'player' if specified in appsetup.json 
-	return Oskari.bundleCls("Oskari.sample.bundle.requireminimal.RequireBundle", 'requireminimal').category({
-		create : function() {
+	/* 3) */
+    /* we'll extend the	EnhancedExtension base class to setup this bundle's operations */
+   
+    var instanceCls = Oskari.cls('Oskari.sample.bundle.requireminimal.RequireBundleInstance').
+    	extend("Oskari.userinterface.extension.EnhancedExtension").category({
 
-			return instanceCls.create('requireminimal');
+        startPlugin : function() {
 
-		}
-	});
+            // let's create an instance of flyout clazz and register it to the zystem
+            var flyout = flyoutCls.create(this, this.getLocalization()['flyout']);
+            this.setFlyout(flyout);
 
-	
+            // let's create an instance of tile clazz and register it to the zystem
+            var tile = tileCls.create(this, this.getLocalization()['tile'])
+            this.setTile(tile);
+
+        }
+    }).events({
+        /* we'll listen to some Oskari events */
+
+        "AfterMapMoveEvent" : function() {
+
+            this.getFlyout().showMapMove();
+
+        }
+    });
+
+	/* 4) */
+    /* we'll register the Bundle with a bundleCls call */ 
+     
+    return Oskari.bundleCls("Oskari.sample.bundle.requireminimal.RequireBundle", 'requireminimal').category({
+        create : function() {
+
+            return instanceCls.create('requireminimal');
+
+        }
+    });
+    
+    /* 5) */
+    /* bundle will be instantiated and started by the application 'player' if specified in appsetup.json */
+
 });
