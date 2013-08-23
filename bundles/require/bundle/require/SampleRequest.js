@@ -1,10 +1,12 @@
+
+
 define(["oskari"], function(Oskari) {
 
-	return Oskari.requestCls('request.SampleRequest', function(placeId) {
-		this._placeId = placeId;
+	return Oskari.requestCls("sample.SampleRequest", function(fid) {
+		this._fid = fid;
 	}, {
-		getId : function() {
-			return this._placeId;
+		getFid : function() {
+			return this._fid;
 		}
 	});
 

@@ -6,6 +6,9 @@ This is Free Software.
 A Collection of Proofs-of-concepts and Samples for Oskari. 
 Created during years 2009 - 2013.
 
+# /bundles/require
+
+PoC for Oskari 2.0 based on require dependency management 
 
 # /bundles/social 
 

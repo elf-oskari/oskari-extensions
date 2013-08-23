@@ -1,17 +1,16 @@
-
-
 define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
-	
-	/* This module declares a tile, flyout and instance for a bundle */
-	
-	/* 1) */
+
+    /* This module declares a tile, flyout and instance for a bundle */
+
+    /* 1) */
     /* we'll use the default tile class for this sample */
     var tileCls = Oskari.cls('Oskari.userinterface.extension.DefaultTile');
 
-	/* 2) */
+    /* 2) */
     /* we'll extend the default flyout for this sample */
     var flyoutCls = Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").
-    	extend("Oskari.userinterface.extension.DefaultFlyout").category({
+    	extend("Oskari.userinterface.extension.DefaultFlyout").
+    	category({
 
         startPlugin : function() {
 
@@ -28,11 +27,12 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
         }
     });
 
-	/* 3) */
+    /* 3) */
     /* we'll extend the	EnhancedExtension base class to setup this bundle's operations */
-   
+
     var instanceCls = Oskari.cls('Oskari.sample.bundle.requireminimal.RequireBundleInstance').
-    	extend("Oskari.userinterface.extension.EnhancedExtension").category({
+    	extend("Oskari.userinterface.extension.EnhancedExtension").
+    	category({
 
         startPlugin : function() {
 
@@ -55,9 +55,9 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
         }
     });
 
-	/* 4) */
-    /* we'll register the Bundle with a bundleCls call */ 
-     
+    /* 4) */
+    /* we'll register the Bundle with a bundleCls call */
+
     return Oskari.bundleCls("Oskari.sample.bundle.requireminimal.RequireBundle", 'requireminimal').category({
         create : function() {
 
@@ -65,8 +65,8 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
 
         }
     });
-    
+
     /* 5) */
-    /* bundle will be instantiated and started by the application 'player' if specified in appsetup.json */
+    /* bundle instance will be created and create method called by the application startup sequence player */
 
 });
