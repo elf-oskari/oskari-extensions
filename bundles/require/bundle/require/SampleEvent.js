@@ -2,11 +2,11 @@
 
 define(["oskari"], function(Oskari) {
 
-	return Oskari.eventCls("sample.SampleEvent", function(fid) {
-		this._fid = fid;
+	return Oskari.eventCls("sample.SampleEvent", function(message) {
+		this.message = message;
 	}, {
-		getFid : function() {
-			return this._fid;
+		getMessage : function() {
+			return this.message;
 		}
 	});
 

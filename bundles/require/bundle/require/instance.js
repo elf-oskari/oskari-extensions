@@ -1,4 +1,10 @@
-define(["oskari", "./Flyout", "./SampleEvent", "./SampleRequest", "./locale/fi", "./locale/en"], function(Oskari, flyoutCls, sampleEventCls, sampleRequestCls) {
+define(["oskari", 
+    "./Flyout", /* UI */ 
+    "./SampleEvent",  /* sample event to notify other bundles */
+    "./SampleRequest",  /* sample request to provide API to others to call */    
+    "./locale/fi", "./locale/en"], 
+    
+    function(Oskari, flyoutCls, sampleEventCls, sampleRequestCls) {
 
     /* 1) default tile implementation is sufficient */
     var tileCls = Oskari.cls('Oskari.userinterface.extension.DefaultTile');
@@ -8,6 +14,7 @@ define(["oskari", "./Flyout", "./SampleEvent", "./SampleRequest", "./locale/fi",
     return Oskari.cls('Oskari.sample.bundle.require.RequireBundleInstance').
     	extend("Oskari.userinterface.extension.EnhancedExtension").category({
 
+		/* this is the placed to create (optional) components tile, flyout etc. */
         startPlugin : function() {
 
             var flyout = flyoutCls.create(this, this.getLocalization()['flyout']);
@@ -18,8 +25,10 @@ define(["oskari", "./Flyout", "./SampleEvent", "./SampleRequest", "./locale/fi",
 
         }
     }).events({
-        /* sent by mapmodule */
-        "AfterMapMoveEvent" : function(evt) {
+        /* loose coupling is used for requests and events as identifiers are used to bind to implementation */
+       
+      	/* notification for map movement if any */
+        'AfterMapMoveEvent' : function(evt) {
 
             this.getFlyout().showMapMove(evt.getCenterX(), evt.getCenterY());
         },
@@ -29,12 +38,20 @@ define(["oskari", "./Flyout", "./SampleEvent", "./SampleRequest", "./locale/fi",
 
             this.getFlyout().showEventes(evt);
         }
+        
     }).requests({
+    	/* loose coupling is used for requests and events as identifiers are used to bind to implementation */
+    	
+    	/* we'll add handler to the request declared above - request MUST be included by the handler - not the 'client' */
         "sample.SampleRequest" : function(request) {
+ 			var me = this, loc = me.getLocalization();
+ 			
+            var evt = sampleEventCls.create(loc.requestHandler.prompt);
+            console.log(evt);
+            
+            this.getSandbox().notifyAll(evt);
 
-            this.notify(sampleEventCls.create('Joo'));
-
-            return "RESPONSE from RequestHandler for " + request.getFid();
+            return [loc.requestHandler.text,' ',request.getMessage()].join('');
 
         }
     });

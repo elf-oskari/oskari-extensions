@@ -2,14 +2,34 @@ Oskari.registerLocalization({
     "lang" : "fi",
     "key" : "require",
     "value" : {
-        "title" : "RequireJS",
+        "title" : "Require",
         "desc" : "",
         "tile" : {
-            "title" : "RequireJS!"
+            "title" : "Require"
         },
         "flyout" : {
-            "title" : "RequireJS!",
-            "message" : "!!!RequireJS!!!"
-        }
+            "title" : "require",
+            "message" : "- RequireJS -",
+            "clickToRequest" : {
+            	"button" : "Click to issue a request",
+            	"text" : "Request from Self"
+            },
+            "ui" : {
+            	"detach": {
+            		"button" : "Click to detach Flyout to floating state"
+            	},
+            	"attach": {
+            		"button" : "Click to attach Flyout to menubar"
+            	}
+            },
+            
+            "mapmove" : "Map Moved to",
+            "eventReceived" : "Event received"
+            
+        },
+        "requestHandler": {
+            	"prompt" : "Request handler",
+            	 "text" : "RESPONSE from RequestHandler for"
+            }
     }
 });

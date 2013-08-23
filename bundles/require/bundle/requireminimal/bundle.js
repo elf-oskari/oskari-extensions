@@ -9,30 +9,47 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
     /* 2) */
     /* we'll extend the default flyout for this sample */
     var flyoutCls = Oskari.cls("Oskari.sample.bundle.requireminimal.RequireFlyout").
-    	extend("Oskari.userinterface.extension.DefaultFlyout").
-    	category({
+    	extend("Oskari.userinterface.extension.EnhancedFlyout").category({
 
+		/* create some UI */
         startPlugin : function() {
-
-            var el = this.getEl();
-            var loc = this.getLocalization();
-            var msg = loc.message;
+            var me = this, el = me.getEl();
+            loc = me.getLocalization();
+            msg = loc.message;
 
             el.append(msg);
 
+            var elBtn = jQuery(['<button>', loc.clickToRequest.button, '</button>'].join(''));
+
+            elBtn.click(function() {
+
+                var responseMsgFromHandler = me.issue('sample.SampleRequest', loc.clickToRequest.text);
+
+                var msgEl = jQuery('<div />');
+                msgEl.append(responseMsgFromHandler);
+                el.append(msgEl);
+
+            })
+
+            el.append(elBtn);
+
         },
 
-        showMapMove : function() {
-            this.getEl().append("- Events AfterMapMoveEvent\n");
+        /* add some info to ui (called from instance in this demo) */
+        showMapMove : function(x, y) {
+            var me = this, el = me.getEl(), loc = me.getLocalization();
+            var msgEl = jQuery('<div />');
+            msgEl.append([loc.mapmove, " ", x, ",", y].join(''));
+            el.append(msgEl);
         }
+
     });
 
     /* 3) */
     /* we'll extend the	EnhancedExtension base class to setup this bundle's operations */
 
     var instanceCls = Oskari.cls('Oskari.sample.bundle.requireminimal.RequireBundleInstance').
-    	extend("Oskari.userinterface.extension.EnhancedExtension").
-    	category({
+    	extend("Oskari.userinterface.extension.EnhancedExtension").category({
 
         startPlugin : function() {
 
@@ -48,17 +65,18 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
     }).events({
         /* we'll listen to some Oskari events */
 
-        "AfterMapMoveEvent" : function() {
+        /* sent by mapmodule */
+        "AfterMapMoveEvent" : function(evt) {
 
-            this.getFlyout().showMapMove();
-
+            this.getFlyout().showMapMove(evt.getCenterX(), evt.getCenterY());
         }
     });
 
     /* 4) */
     /* we'll register the Bundle with a bundleCls call */
 
-    return Oskari.bundleCls("Oskari.sample.bundle.requireminimal.RequireBundle", 'requireminimal').category({
+    return Oskari.bundleCls("Oskari.sample.bundle.requireminimal.RequireBundle", 'requireminimal').
+    	category({
         create : function() {
 
             return instanceCls.create('requireminimal');

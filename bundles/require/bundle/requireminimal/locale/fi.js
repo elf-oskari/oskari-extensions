@@ -2,14 +2,21 @@ Oskari.registerLocalization({
     "lang" : "fi",
     "key" : "requireminimal",
     "value" : {
-        "title" : "RequireJS single file 2",
+        "title" : "require (singlefile)",
         "desc" : "",
         "tile" : {
-            "title" : "RequireJS! 2"
+            "title" : "require SF"
         },
         "flyout" : {
-            "title" : "RequireJS! 2",
-            "message" : "!!!RequireJS!!!  2 "
+            "title" : "require (singlefile)",
+            "message" : "require (singlefile)",
+            "clickToRequest" : {
+            	"button" : "Click to issue a request",
+            	"text" : "Request from Other bundle"
+            },         
+            
+            "mapmove" : "Map Moved to",
+            "eventReceived" : "Event received"
         }
     }
 });
