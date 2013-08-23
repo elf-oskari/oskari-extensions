@@ -5,14 +5,18 @@ define(["oskari", "./Flyout", "./SampleEvent", "./locale/fi", "./locale/en"], fu
 		extend("Oskari.userinterface.extension.EnhancedExtension").category({
 
 		startPlugin : function() {
-			this.getPlugins()['Oskari.userinterface.Flyout'] = flyoutMod.create(this, this.getLocalization()['flyout']);
-			this.getPlugins()['Oskari.userinterface.Tile'] = Oskari.cls('Oskari.userinterface.extension.DefaultTile').create(this, this.getLocalization()['tile']);
-
+			
+			var flyout = flyoutMod.create( this, this.getLocalization()['flyout'] );
+			this.setFlyout( flyout );
+			
+			var tile =  Oskari.cls('Oskari.userinterface.extension.DefaultTile').
+					create(this, this.getLocalization()['tile'])
+			this.setTile( tile );
 		}
 	}).events({
 		"AfterMapMoveEvent" : function() {
 
-			this.getPlugins()['Oskari.userinterface.Flyout'].showMapMove();
+			this.getFlyout().showMapMove();
 		}
 	});
 });
