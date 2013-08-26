@@ -62,9 +62,11 @@ function(name) {
      *      structure and if parameter key is given
      */
     getLocalization : function(key) {
+    	
         if (!this._localization) {
             this._localization = Oskari.getLocalization(this.getName());
         }
+        
         if (key) {
             return this._localization[key];
         }
@@ -239,6 +241,12 @@ function(name) {
     setTile : function(t) {
         this.plugins['Oskari.userinterface.Tile'] = t;
     },
+    setDefaultTile : function(txt) {
+    	var tileCls = Oskari.cls().extend('Oskari.userinterface.extension.DefaultTile');
+    	var tile = tileCls.create(this, { title: txt || ''} );
+        this.plugins['Oskari.userinterface.Tile'] = tile;
+        return tile;
+    },
     getFlyout : function() {
         return this.plugins['Oskari.userinterface.Flyout'];
     },
@@ -246,14 +254,41 @@ function(name) {
         this.plugins['Oskari.userinterface.Flyout'] = f;
     },
 
-    /* o2 helpers */
+	/* o2 helpers for notifications and requetss */
+    slicer : Array.prototype.slice,
+    
     notify : function(evt, retainEvent) {
         return this.getSandbox().notifyAll(evt, retainEvent);
     },
 
     request : function(request) {
         return this.getSandbox().request(this, request);
+    },
+    
+    /**
+     * @method issue issues a request to sandbox and returns value from *the* registered requesthandler if any
+     *  
+     */
+    issue : function() {
+    	var requestName = arguments[0];
+    	var args = this.slicer.apply(arguments,[1]);
+    	var builder = this.getSandbox().getRequestBuilder(requestName);
+    	var request = builder.apply(builder,args);
+        return this.getSandbox().request(this.getExtension(), request);
+    },
+
+	/**
+	 *@method notify sends notification to any registered listeners  
+	 */
+    notify : function() {
+        var eventName = arguments[0];
+    	var args = this.slicer.apply(arguments,[1]);
+    	var builder = this.getSandbox().getEventBuilder(eventName);
+    	var evt = builder.apply(builder,args);
+        return this.getSandbox().notifyAll(evt);
     }
+    
 }, {
+	
     protocol : ['Oskari.bundle.BundleInstance', 'Oskari.mapframework.module.Module', 'Oskari.userinterface.Extension', 'Oskari.mapframework.core.RequestHandler']
 });

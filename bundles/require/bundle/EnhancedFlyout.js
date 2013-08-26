@@ -113,7 +113,7 @@ function(instance, locale) {
     /* o2 helpers for notifications and requetss */
     slicer : Array.prototype.slice,
 
-	issue : function(request) {
+	issue : function() {
     	var requestName = arguments[0];
     	var args = this.slicer.apply(arguments,[1]);
     	var builder = this.getSandbox().getRequestBuilder(requestName);
@@ -121,9 +121,14 @@ function(instance, locale) {
         return this.getSandbox().request(this.getExtension(), request);
     },
 
-    notify : function(evt) {
+    notify : function() {
+        var eventName = arguments[0];
+    	var args = this.slicer.apply(arguments,[1]);
+    	var builder = this.getSandbox().getEventBuilder(eventName);
+    	var evt = builder.apply(builder,args);
         return this.getSandbox().notifyAll(evt);
     }
+    
     
    
 }, {
