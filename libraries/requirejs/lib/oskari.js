@@ -1,6 +1,5 @@
-/**
- * oskari requirejs module
- *
+/* Oskari 2.x
+ * This module implements Oskari clazz system and bundle management.
  *
  */
 var Oskari;
@@ -58,11 +57,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
      * request to load built js packs using this path pattern .../<bundles-path>/<bundle-name>/build/<any-ohther>.js
      */
     var supportBundleAsync = false;
-    var mode = 'dev';
+    var mode = 'default';
     // 'static' / 'dynamic'
-    var instTs = new Date().getTime();
 
-    var _preloaded = false;
+    var _preloaded = true;
     function preloaded() {
         return _preloaded;
     }
@@ -97,14 +95,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         pdefsp : function(cdef) {
             var pdefsp = this.clazzcache[cdef];
 
-            var bp = null;
-            var pp = null;
-            var sp = null;
+            var bp = null, pp = null, sp = null;
             if (!pdefsp) {
-                var parts = cdef.split('.');
-                bp = parts[0];
-                pp = parts[1];
-                sp = parts.slice(2).join('.');
+                var parts = cdef.split('.'), bp = parts[0], pp = parts[1], sp = parts.slice(2).join('.');
 
                 var pdef = this.packages[pp];
                 if (!pdef) {
@@ -131,9 +124,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             if (args.length == 0)
                 throw "missing arguments";
 
-            var cdef = args[0];
-
-            var pdefsp = this.pdefsp(cdef);
+            var cdef = args[0], pdefsp = this.pdefsp(cdef);
 
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
@@ -202,11 +193,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             /*
              * bp base part pp package part sp rest
              */
-            var bp = parts[0];
-
-            var pp = parts[1];
-
-            var sp = parts.slice(2).join('.');
+            var bp = parts[0], pp = parts[1], sp = parts.slice(2).join('.');
 
             var pdef = this.packages[pp];
             if (!pdef) {
@@ -223,8 +210,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 }
 
                 // update prototype
-                var catFuncs = args[2];
-                var prot = pdefsp._class.prototype;
+                var catFuncs = args[2], prot = pdefsp._class.prototype;
 
                 for (p in catFuncs) {
                     var pi = catFuncs[p];
@@ -322,16 +308,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             if (args.length == 0)
                 throw "missing arguments";
 
-            var cdef = args[0];
-            var parts = cdef.split('.');
-            /*
-             * bp base part pp package part sp rest
-             */
-            var bp = parts[0];
-
-            var pp = parts[1];
-
-            var sp = parts.slice(2).join('.');
+            var cdef = args[0], parts = cdef.split('.'), bp = parts[0], pp = parts[1], sp = parts.slice(2).join('.');
 
             var pdef = this.packages[pp];
             if (!pdef) {
@@ -363,9 +340,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             }
 
-            var catName = args[1];
-            var catFuncs = args[2];
-            var prot = pdefsp._class.prototype;
+            var catName = args[1], catFuncs = args[2], prot = pdefsp._class.prototype;
 
             for (p in catFuncs) {
                 var pi = catFuncs[p];
@@ -391,16 +366,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             if (args.length == 0)
                 throw "missing arguments";
 
-            var cdef = args[0];
-            var parts = cdef.split('.');
-            /*
-             * bp base part pp package part sp rest
-             */
-            var bp = parts[0];
-
-            var pp = parts[1];
-
-            var sp = parts.slice(2).join('.');
+            var cdef = args[0], parts = cdef.split('.'), bp = parts[0], pp = parts[1], sp = parts.slice(2).join('.');
 
             var pdef = this.packages[pp];
             if (!pdef) {
@@ -523,31 +489,15 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
         slicer : Array.prototype.slice,
 
-        /*
-         * @method create
-         *
-         * creates a class instance THIS is for compatibility mode only
-         * construct should be used for new classes
-         *
-         * var x =
-         * Oskari.clazz.create('Oskari.mapframework.request.common.ActivateOpenlayersMapControlRequest','12313');
-         */
         create : function() {
             var args = arguments;
             if (args.length == 0)
                 throw "missing arguments";
-            var instargs = this.slicer.apply(arguments, [1])/*[];
-             for(var n = 1; n < args.length; n++)
-             instargs.push(args[n]);*/
-
-            var cdef = args[0];
-
-            var pdefsp = this.pdefsp(cdef);
+            var instargs = this.slicer.apply(arguments, [1]), cdef = args[0], pdefsp = this.pdefsp(cdef);
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
 
-            var inst = new pdefsp._class();
-            var ctors = pdefsp._constructors;
+            var inst = new pdefsp._class(), ctors = pdefsp._constructors;
             if (ctors) {
                 for (var c = 0; c < ctors.length; c++) {
                     ctors[c].apply(inst, instargs);
@@ -557,26 +507,16 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             }
             return inst;
         },
-        /*
-         * @method create
-         *
-         * creates a class instance THIS is for compatibility mode only
-         * construct should be used for new classes
-         *
-         * var x =
-         * Oskari.clazz.create('Oskari.mapframework.request.common.ActivateOpenlayersMapControlRequest','12313');
-         */
+
         createWithPdefsp : function() {
             var args = arguments;
             if (args.length == 0)
                 throw "missing arguments";
-            var instargs = arguments[1];
-            var pdefsp = args[0];
+            var instargs = arguments[1], pdefsp = args[0];
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
 
-            var inst = new pdefsp._class();
-            var ctors = pdefsp._constructors;
+            var inst = new pdefsp._class(), ctors = pdefsp._constructors;
             if (ctors) {
                 for (var c = 0; c < ctors.length; c++) {
                     ctors[c].apply(inst, instargs);
@@ -586,29 +526,18 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             }
             return inst;
         },
-        /**
-         * @method construct
-         *
-         * constructs class instance assuming props as single argument to
-         * constructor
-         *
-         *
-         */
+
         construct : function() {
             var args = arguments;
             if (args.length != 2)
                 throw "missing arguments";
 
-            var cdef = args[0];
-            var instprops = args[1];
-
-            var pdefsp = this.pdefsp(cdef);
+            var cdef = args[0], instprops = args[1], pdefsp = this.pdefsp(cdef);
 
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
 
-            var inst = new pdefsp._class();
-            var ctors = pdefsp._constructors;
+            var inst = new pdefsp._class(), ctors = pdefsp._constructors;
             if (ctors) {
                 for (var c = 0; c < ctors.length; c++) {
                     ctors[c].apply(inst, instargs);
@@ -630,9 +559,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             if (args.length == 0)
                 throw "missing arguments";
 
-            var cdef = args[0];
-
-            var pdefsp = this.pdefsp(cdef);
+            var cdef = args[0], pdefsp = this.pdefsp(cdef);
 
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
@@ -641,9 +568,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 return pdefsp._builder;
 
             pdefsp._builder = function() {
-                var instargs = arguments;
-                var inst = new pdefsp._class();
-                var ctors = pdefsp._constructors;
+                var instargs = arguments, inst = new pdefsp._class(), ctors = pdefsp._constructors;
                 if (ctors) {
                     for (var c = 0; c < ctors.length; c++) {
                         ctors[c].apply(inst, instargs);
@@ -677,9 +602,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 return pdefsp._builder;
 
             pdefsp._builder = function() {
-                var instargs = arguments;
-                var inst = new pdefsp._class();
-                var ctors = pdefsp._constructors;
+                var instargs = arguments, inst = new pdefsp._class(), ctors = pdefsp._constructors;
                 if (ctors) {
                     for (var c = 0; c < ctors.length; c++) {
                         ctors[c].apply(inst, instargs);
@@ -983,8 +906,6 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * implid, bundleid most likely same value
          */
         createBundle : function(implid, bundleid) {
-            // sets up bundle runs the registered func to instantiate bundle
-            // this enables 'late binding'
             var bundlImpl = implid;
             var me = this;
             var defState = me.stateForBundleDefinitions[bundlImpl];
@@ -1043,16 +964,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * NYI. Shall DESTROY bundle definition
          */
         destroyBundle : function(bundleid) {
-            // var bi = this.impls[bundleid];
         },
-        /**
-         * @method uninsttall
-         * @param implid
-         * @returns
-         *
-         * removes bundle definition from manager Does NOT remove bundles or bundle
-         * instances currently.
-         */
+
         uninstall : function(implid) {
             var bp = this.impls[implid];
             return bp;
@@ -1061,9 +974,6 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * creates a bundle instance for previously installed and created bundle
          */
         createInstance : function(bundleid) {
-            // creates a bundle_instance
-            // any configuration and setup IS BUNDLE / BUNDLE INSTANCE specific
-            // create / config / start / process / stop / destroy ...
 
             var me = this;
             if (!me.stateForBundles[bundleid] || !me.stateForBundles[bundleid].state) {
@@ -1236,12 +1146,12 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     var o2anoncategory = 0;
     var o2anonbundle = 0;
 
-	/* this is Oskari 2 modulespec prototype which provides a leaner API  */
-	
+    /* this is Oskari 2 modulespec prototype which provides a leaner API  */
     cs.define('Oskari.ModuleSpec', function(clazzInfo, clazzName) {
         this.cs = cs;
         this.clazzInfo = clazzInfo;
         this.clazzName = clazzName;
+
     }, {
 
         slicer : Array.prototype.slice,
@@ -1306,7 +1216,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
      * @static
      * @property Oskari
      */
-    var bndl = {
+    var o2main = {
         bundle_manager : bm, /* */
         bundle_facade : fcd,
         bundle_locale : blocale,
@@ -1442,9 +1352,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             blMimeTypeToPlugin[mimeType] = plugin;
         },
 
-        /* O2 builders and helpers */
-        /* NOTE REQUIRES SOME CHANGES TO CLAZZ IMPL return pdefsp etc calls */
-
+        /* entry point to new class API see Oskari.ModuleSpec above */
         cls : function(clazzName, ctor, protoProps, metas) {
 
             var clazzInfo = undefined;
@@ -1464,8 +1372,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             }
 
             return cs.create('Oskari.ModuleSpec', clazzInfo, clazzName);
+
         },
 
+        /* o2 helper to access sandbox */
         sandbox : function(sandboxName) {
 
             var sandboxref = {
@@ -1508,15 +1418,23 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
         },
 
+        /* o2 helper to register localisation */
         loc : function() {
-            return bndl.registerLocalization.apply(bndl, arguments);
+            return o2main.registerLocalization.apply(o2main, arguments);
+        },
+
+        setConfiguration : function(conf) {
+            return fcd.setConfiguration(conf);
+        },
+        getConfiguration : function() {
+            return fcd.getConfiguration();
         }
     };
 
     /* o2 api for event class */
-    bndl.eventCls = function(eventName, constructor, protoProps) {
+    o2main.eventCls = function(eventName, constructor, protoProps) {
         var clazzName = ['Oskari', 'event', 'registry', eventName].join('.');
-        var rv = bndl.cls(clazzName, constructor, protoProps, {
+        var rv = o2main.cls(clazzName, constructor, protoProps, {
             protocol : ['Oskari.mapframework.event.Event']
         });
 
@@ -1532,9 +1450,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     };
 
     /* o2 api for request class */
-    bndl.requestCls = function(requestName, constructor, protoProps) {
+    o2main.requestCls = function(requestName, constructor, protoProps) {
         var clazzName = ['Oskari', 'request', 'registry', requestName].join('.');
-        var rv = bndl.cls(clazzName, constructor, protoProps, {
+        var rv = o2main.cls(clazzName, constructor, protoProps, {
             protocol : ['Oskari.mapframework.request.Request']
         });
 
@@ -1549,30 +1467,16 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         return rv;
     };
 
-    /* o2 api for request handlers - note restriction: one for each request - no overrides */
-    bndl.requestHandlerCls = function(requestCls, impl) {
-        var clazzName = ['Oskari', 'requesthandler', 'registry', requestCls.getName()].join('.');
-        var rv = bndl.cls(clazzName, function() {
-        }, {
-            handleRequest : function(core, request) {
-                return impl(request);
-            }
-        }, {
-            protocol : ['Oskari.mapframework.core.RequestHandler']
-        });
-        rv.requestName = requestCls.getName();
-
-        return rv;
-    };
-
     /* o2 api for bundle classes */
-    bndl.bundleCls = function(bnldId, clazzName) {
+    o2main.extensionCls = function(clazzName) {
+        return o2main.cls(clazzName).extend("Oskari.userinterface.extension.EnhancedExtension")
+    }, o2main.bundleCls = function(bnldId, clazzName) {
 
         if (!bnldId) {
             bnldId = ( ['__', (++o2anonbundle)].join('_'));
         }
 
-        var rv = bndl.cls(clazzName, function() {
+        var rv = o2main.cls(clazzName, function() {
         }, {
             update : function() {
             }
@@ -1587,7 +1491,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         rv.___bundleIdentifier = bnldId;
         rv.loc = function(props) {
             props.key = this.___bundleIdentifier;
-            bndl.registerLocalization(props);
+            o2main.registerLocalization(props);
             return rv;
         }, rv.start = function(instanceid) {
             var bundleid = this.___bundleIdentifier;
@@ -1618,17 +1522,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         return rv;
     };
 
-    /**
-     * Let's register Oskari as a Oskari global
-     */
-    ga.apply(cs, ['Oskari', bndl]);
+    ga.apply(cs, ['Oskari', o2main]);
 
-    /*
-     * window.bundle = bndl; window.Oskari = bndl;
-     */
+    Oskari = o2main;
 
-    Oskari = bndl;
-
-    exports.Oskari = bndl;
-    return bndl;
+    exports.Oskari = o2main;
+    return o2main;
 });

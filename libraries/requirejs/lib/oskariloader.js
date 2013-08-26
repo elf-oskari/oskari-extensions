@@ -1,4 +1,9 @@
+/* Oskari 1.x compatibility */
+/* This module implements Oskari 1.x bundle loader */
+
 define(['oskari', 'jquery', 'exports', 'css'], function(Oskari, $, exports) {
+
+    var instTs = new Date().getTime();
 
     var basePathForBundles = null;
 
@@ -139,7 +144,7 @@ define(['oskari', 'jquery', 'exports', 'css'], function(Oskari, $, exports) {
         }
     });
 
-    Oskari.clazz.category('Oskari.BundleManager', 'loader', {
+    Oskari.clazz.category('Oskari.BundleManager', 'loader_1_x', {
 
         /**
          * @method loadBundleDefinition
@@ -393,7 +398,7 @@ define(['oskari', 'jquery', 'exports', 'css'], function(Oskari, $, exports) {
      * FACADE will have only a couple of methods which trigger alotta operations
      */
 
-    Oskari.clazz.category('Oskari.BundleFacade', 'loader', {
+    Oskari.clazz.category('Oskari.BundleFacade', 'loader_1_x', {
 
         /*
          * @method requireBundle executes callback after bundle sources have
