@@ -119,112 +119,23 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     }
 
     /**
-     * @clazz Oskari.clazzadapter
-     *
-     * This is an adapter class template that should not be used directly
-     */
-    var clazzadapter = function(i, md) {
-        this.impl = i;
-
-        /* set overridden methods intentionally to instance */
-        for (p in md) {
-            this[p] = md[p];
-        }
-    };
-    clazzadapter.prototype = {
-        /**
-         * @method define
-         */
-        "define" : function() {
-            throw "define not supported for this adapter " + this.impl;
-        },
-        /**
-         * @method category
-         *
-         * Adds a set of methods to classs prototype
-         *
-         * If no class definition exists this shall create a basic class
-         * definition as a placeholder for the actual class definition. This is
-         * required to support asynchronous javascript loading.
-         *
-         */
-        "category" : function() {
-            throw "category not supported for this adapter " + this.impl;
-        },
-        /**
-         * @method create
-         *
-         * Creates an class instance initialized with constructors varargs
-         */
-        "create" : function() {
-            throw "create not supported for this adapter " + this.impl;
-
-        },
-        /**
-         * @method construct
-         *
-         * Constructs an object initialised with a property object
-         */
-        "construct" : function() {
-            throw "construct not supported for this adapter " + this.impl;
-
-        },
-        /**
-         * @method global
-         *
-         * Accesses or sets a global (in this context) variable value
-         */
-        "global" : function() {
-            throw "global not supported for this adapter " + this.impl;
-
-        },
-        /**
-         * @method metadata
-         *
-         * Provides access to class metadata
-         *
-         */
-        "metadata" : function() {
-            throw "metadata not supported for this adapter " + this.impl;
-
-        },
-        /**
-         * @method protocol
-         *
-         * Provides access to all classes that implement queried protocol
-         */
-        "protocol" : function() {
-            throw "protocol not supported for this adapter " + this.impl;
-
-        },
-        "purge" : function() {
-            throw "purge not supported for this adapter " + this.impl;
-        }
-    };
-
-    /**
-     * @class Oskari.clazzdef
-     *
-     * A Container for any Oskari class definitions
-     */
-    var clazzdef = function() {
-
-        this.packages = {};
-        this.protocols = {};
-        this.inheritance = {};
-        this.aspects = {};
-        this.clazzcache = {};
-
-    };
-    /**
      * @class Oskari.nativeadapter
      *
      * An Adapter to support Oskari class system
      *
      */
-    var nativeadapter = new clazzadapter(new clazzdef(), {
+    var nativeadapter = function() {
+        this.packages = {};
+        this.protocols = {};
+        this.inheritance = {};
+        this.aspects = {};
+        this.clazzcache = {};
+        this.globals = {};
+    };
 
-        "purge" : function() {
+    nativeadapter.prototype = {
+
+        purge : function() {
 
         },
         /**
@@ -236,32 +147,20 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          *            the name of the protocol as string
          *
          */
-        "protocol" : function() {
+        protocol : function() {
             var args = arguments;
             if (args.length == 0)
                 throw "missing arguments";
 
             // var cdef = args[0];
 
-            return this.impl.protocols[args[0]];
+            return this.protocols[args[0]];
 
         },
-        /**
-         * @method metadata
-         *
-         * Returns metadata for the class
-         *
-         * @param classname
-         *            the name of the class as string
-         */
-        "metadata" : function() {
-            var args = arguments;
-            if (args.length == 0)
-                throw "missing arguments";
 
-            var cdef = args[0];
-
-            var pdefsp = this.impl.clazzcache[cdef];
+        /* lookup pdefsp */
+        pdefsp : function(cdef) {
+            var pdefsp = this.clazzcache[cdef];
 
             var bp = null;
             var pp = null;
@@ -272,15 +171,34 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 pp = parts[1];
                 sp = parts.slice(2).join('.');
 
-                var pdef = this.impl.packages[pp];
+                var pdef = this.packages[pp];
                 if (!pdef) {
                     pdef = {};
-                    this.impl.packages[pp] = pdef;
+                    this.packages[pp] = pdef;
                 }
                 pdefsp = pdef[sp];
-                this.impl.clazzcache[cdef] = pdefsp;
+                this.clazzcache[cdef] = pdefsp;
 
             }
+            return pdefsp;
+        },
+
+        /**
+         * @method metadata
+         *
+         * Returns metadata for the class
+         *
+         * @param classname
+         *            the name of the class as string
+         */
+        metadata : function() {
+            var args = arguments;
+            if (args.length == 0)
+                throw "missing arguments";
+
+            var cdef = args[0];
+
+            var pdefsp = this.pdefsp(cdef);
 
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
@@ -305,13 +223,13 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 for (var p = 0; p < protocols.length; p++) {
                     var pt = protocols[p];
 
-                    if (!this.impl.protocols[pt]) {
-                        this.impl.protocols[pt] = {};
+                    if (!this.protocols[pt]) {
+                        this.protocols[pt] = {};
                     }
 
                     var cn = bp + "." + pp + "." + sp;
 
-                    this.impl.protocols[pt][cn] = pdefsp;
+                    this.protocols[pt][cn] = pdefsp;
                 }
             }
 
@@ -355,10 +273,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             var sp = parts.slice(2).join('.');
 
-            var pdef = this.impl.packages[pp];
+            var pdef = this.packages[pp];
             if (!pdef) {
                 pdef = {};
-                this.impl.packages[pp] = pdef;
+                this.packages[pp] = pdef;
             }
 
             var pdefsp = pdef[sp];
@@ -435,7 +353,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 pdefsp._category[catName] = catFuncs;
             }
 
-            this.impl.inheritance[cdef] = compo;
+            this.inheritance[cdef] = compo;
             pdef[sp] = pdefsp;
 
             if (args.length > 3) {
@@ -480,10 +398,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             var sp = parts.slice(2).join('.');
 
-            var pdef = this.impl.packages[pp];
+            var pdef = this.packages[pp];
             if (!pdef) {
                 pdef = {};
-                this.impl.packages[pp] = pdef;
+                this.packages[pp] = pdef;
             }
             var pdefsp = pdef[sp];
 
@@ -505,7 +423,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 };
                 cd.prototype['_'] = pdefsp;
                 cd.prototype['_super'] = this['_super'];
-                this.impl.inheritance[cdef] = compo;
+                this.inheritance[cdef] = compo;
                 pdef[sp] = pdefsp;
 
             }
@@ -529,14 +447,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             return pdefsp;
         },
+
         /**
-         * @method inherit
-         *
-         * adds impl from super class to class prototype
-         *
-         * THIS is done as follows
-         * -
-         *
+         * looup and create stub
          */
         lookup : function() {
             var args = arguments;
@@ -554,10 +467,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             var sp = parts.slice(2).join('.');
 
-            var pdef = this.impl.packages[pp];
+            var pdef = this.packages[pp];
             if (!pdef) {
                 pdef = {};
-                this.impl.packages[pp] = pdef;
+                this.packages[pp] = pdef;
             }
             var pdefsp = pdef[sp];
 
@@ -576,7 +489,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                     _category : {},
                     _composition : compo
                 };
-                this.impl.inheritance[cdef] = compo;
+                this.inheritance[cdef] = compo;
                 pdef[sp] = pdefsp;
 
             }
@@ -597,27 +510,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         composition : function() {
             var cdef = arguments[0];
 
-            var pdefsp = this.impl.clazzcache[cdef];
-
-            var bp = null;
-            var pp = null;
-            var sp = null;
-            if (!pdefsp) {
-                var parts = cdef.split('.');
-                bp = parts[0];
-                pp = parts[1];
-                sp = parts.slice(2).join('.');
-
-                var pdef = this.impl.packages[pp];
-                if (!pdef) {
-                    pdef = {};
-                    this.impl.packages[pp] = pdef;
-                }
-                pdefsp = pdef[sp];
-                this.impl.clazzcache[cdef] = pdefsp;
-
-            }
-
+            var pdefsp = this.pdefsp(cdef);
             return pdefsp;
         },
         /**
@@ -689,7 +582,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             pdefsp._constructors = constructors;
             pdefsp._superCategory = superClazzMethodCats;
 
-            return clazz;
+            //return clazz;
         },
         /**
          * @method printAncestry
@@ -794,27 +687,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             var cdef = args[0];
 
-            var pdefsp = this.impl.clazzcache[cdef];
-
-            var bp = null;
-            var pp = null;
-            var sp = null;
-            if (!pdefsp) {
-                var parts = cdef.split('.');
-                bp = parts[0];
-                pp = parts[1];
-                sp = parts.slice(2).join('.');
-
-                var pdef = this.impl.packages[pp];
-                if (!pdef) {
-                    pdef = {};
-                    this.impl.packages[pp] = pdef;
-                }
-                pdefsp = pdef[sp];
-                this.impl.clazzcache[cdef] = pdefsp;
-
-            }
-
+            var pdefsp = this.pdefsp(cdef);
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
 
@@ -842,8 +715,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             var args = arguments;
             if (args.length == 0)
                 throw "missing arguments";
-            var instargs = this.slicer.apply(arguments, [1])/*[];
-             for(var n = 1; n < args.length; n++)
+            var instargs = arguments[1]//this.slicer.apply(arguments, [1])/*[];
+            /*for(var n = 1; n < args.length; n++)
              instargs.push(args[n]);*/
 
             var pdefsp = args[0];
@@ -877,26 +750,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             var cdef = args[0];
             var instprops = args[1];
 
-            var pdefsp = this.impl.clazzcache[cdef];
-
-            var bp = null;
-            var pp = null;
-            var sp = null;
-            if (!pdefsp) {
-                var parts = cdef.split('.');
-                bp = parts[0];
-                pp = parts[1];
-                sp = parts.slice(2).join('.');
-
-                var pdef = this.impl.packages[pp];
-                if (!pdef) {
-                    pdef = {};
-                    this.impl.packages[pp] = pdef;
-                }
-                pdefsp = pdef[sp];
-                this.impl.clazzcache[cdef] = pdefsp;
-
-            }
+            var pdefsp = this.pdefsp(cdef);
 
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
@@ -919,27 +773,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             var cdef = args[0];
 
-            var pdefsp = this.impl.clazzcache[cdef];
-
-            var bp = null;
-            var pp = null;
-            var sp = null;
-
-            if (!pdefsp) {
-                var parts = cdef.split('.');
-                bp = parts[0];
-                pp = parts[1];
-                sp = parts.slice(2).join('.');
-
-                var pdef = this.impl.packages[pp];
-                if (!pdef) {
-                    pdef = {};
-                    this.impl.packages[pp] = pdef;
-                }
-                pdefsp = pdef[sp];
-                this.impl.clazzcache[cdef] = pdefsp;
-
-            }
+            var pdefsp = this.pdefsp(cdef);
 
             if (!pdefsp)
                 throw "clazz " + sp + " does not exist in package " + pp + " bundle " + bp;
@@ -996,181 +830,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             };
             return pdefsp._builder;
 
-        }
-    });
-
-    /**
-     * @class Oskari.clazz
-     * @singleton
-     *
-     * Container for Oskari's class definitions Supports multiple adapters for
-     * different class libraries
-     *
-     */
-    var clazz = function(regExp, adapter) {
-        this.defRex = new RegExp(regExp);
-        this.def = adapter;
-        this.hasOtherNs = false;
-        this.ns = {};
-        this.alias = {};
-
-        this.globals = {};
-    };
-
-    clazz.prototype = {
-
-        get : function() {
-            var args = arguments;
-            if (!this.hasOtherNs || this.defRex.test(args[0])) {
-                return this.def;
-            }
-
-            var parts = args[0].split('.');
-            var bp = parts[0];
-
-            var ai = this.ns[bp];
-            if (!ai)
-                throw "clazz: ns NOT bound " + bp;
-            return ai;
         },
-        /*
-         * @method self @param adapter identifier
-         *
-         * returns class adapter for the given class libray
-         *
-         */
-        self : function(bp) {
-            var ai = this.ns[bp];
-            if (!ai)
-                throw "clazz: ns NOT bound " + bp;
-
-            return ai.self;
-        },
-        /**
-         * @method adapt
-         *
-         * registers an adapter to the class system
-         */
-        adapt : function(base, adapter) {
-            this.ns[base] = adapter;
-            this.hasOtherNs = true;
-        },
-        /**
-         * @method define
-         * @param class
-         *            name
-         *
-         * defines a class using the first part as class system identifier
-         *
-         * Parameters differ for different class adapters
-         */
-        define : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.define.apply(ai, arguments);
-
-        },
-        /**
-         * @method category
-         *
-         * registers a set of methods to a class
-         * @param classname
-         *            Parameters differ for different class adapters
-         */
-        category : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.category.apply(ai, arguments);
-
-        },
-        composition : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.composition.apply(ai, arguments);
-
-        },
-        extend : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.extend.apply(ai, arguments);
-
-        },
-        /**
-         * @method create Creates a class instance
-         * @param classname
-         *            Parameters differ for different class adapters
-         *
-         */
-        create : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.create.apply(ai, arguments);
-
-        },
-        /**
-         * @method create Creates a class instance
-         * @param classname
-         *            Parameters differ for different class adapters
-         *
-         */
-        createWithPdefsp : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.createWithPdefsp.apply(ai, arguments);
-
-        },
-        /**
-         * @method construct
-         * @param classname
-         *            Parameters differ for different class adapters
-         *
-         * Constructs an instance with a property object
-         */
-        construct : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.construct.apply(ai, arguments);
-
-        },
-        /**
-         * @method createArrArgs
-         * @param array
-         *            of arguments for the constructor with class name as first
-         *            element in array
-         *
-         */
-        createArrArgs : function(args) {
-            var ai = this.get.apply(this, arguments);
-            return ai.create.apply(ai, args);
-
-        },
-        /**
-         * @method builder
-         * @param classname
-         *            returns a class instance builder that can be reused
-         */
-        builder : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.builder.apply(ai, arguments);
-        },
-        /**
-         * @method builder
-         * @param classname
-         *            returns a class instance builder that can be reused
-         */
-        builderFromPdefsp : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.builderFromPdefsp.apply(ai, arguments);
-        },
-        /**
-         * @method global
-         * @param variable
-         *            name
-         * @param optional
-         *            value gets or sets a global variable for Oskari context
-         */
         global : function() {
             if (arguments.length == 0)
                 return this.globals;
@@ -1180,63 +840,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             }
             return this.globals[name];
 
-        },
-        /**
-         * @method metadata
-         *
-         * returns class metadata if available
-         * @param classname
-         */
-        "metadata" : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.metadata.apply(ai, arguments);
-        },
-        /**
-         * @method protocol
-         *
-         * appends or overrides a set of methods to class prototype If no class
-         * definition is present, creates a template class definition
-         *
-         */
-        "protocol" : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.protocol.apply(ai, arguments);
-        },
-        "purge" : function() {
-            var ai = this.get.apply(this, arguments);
-
-            return ai.purge.apply(ai, arguments);
-
-        },
-        "printAncestry" : function() {
-            var ai = this.get.apply(this, arguments);
-            return ai.printAncestry.apply(ai, arguments);
-
-        },
-        "printHierarchy" : function() {
-            var ai = this.get.apply(this, arguments);
-            return ai.printHierarchy.apply(ai, arguments);
-
-        },
-        "apropos" : function() {
-            var ai = this.get.apply(this, arguments);
-            return ai.apropos.apply(ai, arguments);
-
-        },
-        "lookup" : function() {
-            var ai = this.get.apply(this, arguments);
-            return ai.lookup.apply(ai, arguments);
         }
     };
 
-    clazz.prototype.singleton = new clazz('^Oskari(.*)', nativeadapter);
-
-    /*
-     * registers the default native class adapter for Oskari
-     */
-    /*clazz.prototype.singleton.adapt('Oskari', nativeadapter);*/
+    var clazz_singleton = new nativeadapter();
 
     var bundle_loader_id = 0;
     /**
@@ -1486,7 +1093,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          *
          * a loggin and debugging function
          */
-        "alert" : function(what) {        
+        "alert" : function(what) {
             logMsg(what);
         },
         /**
@@ -1504,10 +1111,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         "self" : function() {
             return this;
         },
-        
+
         /* ! NOTE ! implid and bundleid ARE NOT TO BE CONFUSED WITH FACADE'S INSTANCEID OR instances arrays indexes */
         /* ! NOTE ! implid AND bundleid AS WELL AS bnldImpl are most likely always the same value */
-        
+
         /**
          * @method install
          * @param implid
@@ -1565,7 +1172,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * Installs a bundle defined as Oskari native Class
          */
         "installBundleClass" : function(implid, clazzName) {
-            var cs = clazz.prototype.singleton;
+            var cs = clazz_singleton;
+            //clazz.prototype.singleton;
 
             var classmeta = cs.metadata(clazzName);
             var bp = cs.builder(clazzName);
@@ -1584,7 +1192,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * Installs a bundle defined as Oskari native Class
          */
         "installBundlePdefsp" : function(implid, pdefsp) {
-            var cs = clazz.prototype.singleton;
+            var cs = clazz_singleton;
+            //clazz.prototype.singleton;
 
             var bp = cs.builderFromPdefsp(pdefsp);
             var bundleMetadata = pdefsp._metadata;
@@ -1890,7 +1499,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * @returns
          *
          * Creates a Bundle (NOTE NOT an instance of bundle)
-         * implid, bundleid most likely same value 
+         * implid, bundleid most likely same value
          */
         "createBundle" : function(implid, bundleid) {
             // sets up bundle runs the registered func to instantiate bundle
@@ -1996,7 +1605,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 "bundle" : b,
                 "instance" : bi,
                 "manager" : this,
-                "clazz" : clazz.prototype.singleton,
+                "clazz" : clazz_singleton,
                 "requestMediator" : {}
             });
 
@@ -2407,7 +2016,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
      *
      */
 
-    var cs = clazz.prototype.singleton;
+    var cs = clazz_singleton;
 
     /**
      * let's create bundle manager singleton
@@ -2454,6 +2063,66 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     var domMgr = new bundle_dom_manager($);
 
     var o2anonclass = 0;
+    var o2anoncategory = 0;
+
+    var o2modulespec = function(clazzInfo, clazzName) {
+        this.cs = cs;
+        this.clazzInfo = clazzInfo;
+        this.clazzName = clazzName;
+    };
+    var modspec = o2modulespec.prototype;
+    /*o2modulespec.prototype = {
+
+    };*/
+    //modspec.clazzName = clazzName,
+    modspec.slicer = Array.prototype.slice, modspec.category = function(protoProps, traitsName) {
+        var clazzInfo = cs.category(this.clazzName, traitsName || '____', protoProps);
+        this.clazzInfo = clazzInfo;
+        return this;
+    }, modspec.extend = function(clsss) {
+        var clazzInfo = cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
+        this.clazzInfo = clazzInfo;
+        return this;
+    }, modspec.construct = function(props) {
+        return cs.construct(this.clazzName, props);
+    }, modspec.create = function() {
+        return cs.createWithPdefsp(this.clazzInfo, arguments);
+    }, modspec.name = function() {
+        return this.clazzName;
+    }, modspec.metadata = function() {
+        return cs.metadata(this.clazzName);
+    }, modspec.events = function(events) {
+        var orgmodspec = this;
+        orgmodspec.category({
+            eventHandlers : events,
+            onEvent : function(event) {
+                var handler = this.eventHandlers[event.getName()];
+                if (!handler) {
+                    return;
+                }
+
+                return handler.apply(this, [event]);
+            }
+        }, '___eventes');
+        return orgmodspec;
+    }, modspec.requests = function(requests) {
+        var orgmodspec = this;
+        orgmodspec.category({
+            requestHandlers : requests,
+            onRequest : function(request) {
+                var handler = this.requestHandlers[request.getName()];
+                if (!handler) {
+                    return;
+                }
+
+                return handler.apply(this, [request]);
+            }
+        }, '___requestes');
+        return orgmodspec;
+    }, modspec.builder = function() {
+        return cs.builderFromPdefsp(this.clazzInfo);
+    };
+
     /**
      * @static
      * @property Oskari
@@ -2476,7 +2145,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          *  @property Oskari.clazzadapter
          *  prototype for a class namespace adapter class
          */
-        clazzadapter : clazzadapter,
+        //clazzadapter : clazzadapter,
 
         run : function(func) {
             func();
@@ -2613,69 +2282,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 }, protoProps, metas || {});
             }
 
-            var modspec = {
-                slicer : Array.prototype.slice,
-                clazzInfo : clazzInfo
-            };
-
-            modspec.clazzName = clazzName, modspec.category = function(protoProps, traitsName) {
-                var me = this;
-                var clazzInfo = cs.category(me.clazzName, traitsName || '____', protoProps);
-                this.clazzInfo = clazzInfo;
-                return modspec;
-            }, modspec.extend = function(clsss) {
-                var clazzInfo = cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
-                this.clazzInfo = clazzInfo;
-                return this;
-            }, modspec.construct = function(props) {
-                var me = this;
-                return cs.construct(me.clazzName, props);
-            }, modspec.create = function() {
-                return cs.createWithPdefsp(me.clazzInfo, arguments);
-            }, modspec.create = function() {
-                var me = this;
-                var args = me.slicer.apply(arguments, [0]);
-                args.unshift(me.clazzName);
-                return cs.create.apply(cs, args);
-            }, modspec.name = function() {
-                return modspec.clazzName;
-            }, modspec.metadata = function() {
-                var me = this;
-                return cs.metadata(me.clazzName);
-            }, modspec.events = function(events) {
-                var orgmodspec = this;
-                orgmodspec.category({
-                    eventHandlers : events,
-                    onEvent : function(event) {
-                        var me = this;
-                        var handler = me.eventHandlers[event.getName()];
-                        if (!handler) {
-                            return;
-                        }
-
-                        return handler.apply(this, [event]);
-                    }
-                }, '___eventes');
-                return orgmodspec;
-            }, modspec.requests = function(requests) {
-                var orgmodspec = this;
-                orgmodspec.category({
-                    requestHandlers : requests,
-                    onRequest : function(request) {
-                        var me = this;
-                        var handler = me.requestHandlers[request.getName()];
-                        if (!handler) {
-                            return;
-                        }
-
-                        return handler.apply(this, [request]);
-                    }
-                }, '___requestes');
-                return orgmodspec;
-            }, modspec.builder = function() {
-                var me = this;
-                return cs.builderFromPdefsp(me.clazzInfo);
-            };
+            var modspec = new o2modulespec(clazzInfo, clazzName);
 
             return modspec;
         },
@@ -2792,7 +2399,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
         rv.___bundleIdentifier = bnldId;
         rv.loc = function(props) {
-            props.key = rv.___bundleIdentifier;
+            props.key = this.___bundleIdentifier;
             bndl.registerLocalization(props);
             return rv;
         }, rv.start = function(instanceid) {

@@ -89,7 +89,7 @@ function($, Oskari) {
 
             /* let's simulate loading with require for those enabled */
            Oskari.setLoaderMode('static');
-           Oskari.setPreloaded(false);
+           Oskari.setPreloaded(true);
 
             require(["_bundles_/require/bundle/require/bundle", 
             "_bundles_/require/bundle/requiresf/bundle", 
