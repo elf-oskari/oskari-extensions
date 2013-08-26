@@ -1,6 +1,6 @@
 /**
  * oskari requirejs module
- * - same operations as bundles/bundle.js but implemented with requirejs
+ * 
  *
  */
 var Oskari;
@@ -936,7 +936,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
                 reqs.push(fn);
             }
-            /*console.log("OSKARI.REQUIRE", reqs);*/
+            
             require(reqs, function() {
                 me.callback();
                 me.manager.notifyLoaderStateChanged(me, true)
@@ -1788,11 +1788,6 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                     return -1;
                 return a.phase < b.phase ? -1 : 1;
             });
-            /*
-             * console.log("!#!#! Built LIST OF DEPS"); for( var d = 0 ; d <
-             * depslist.length ; d++ ) console.log(" - - - - -- - >
-             * "+depslist[d].name);
-             */
 
             if (hasPhase || !supportBundleAsync) {
                 me.loadBundleDep(depslist, callback, manager, info);
@@ -1966,17 +1961,13 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
             mediator.player = function() {
 
-                /*console.log("BUNDLEPLAYER","shifting",mediator.seq);*/
                 mediator.bndl = mediator.seq.shift();
                 if (mediator.bndl == null) {
-                    /*console.log("BUNDLEPLAYER","finished");*/
                     if (cb) {
                         cb(startupInfo);
                     }
                     return;
                 }
-
-                /*console.log("BUNDLEPLAYER","playing",mediator.bndl.title,mediator.bndl);*/
 
                 mediator.facade.playBundle(mediator.bndl, function(bi) {
 
@@ -2059,8 +2050,10 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
     var domMgr = new bundle_dom_manager($);
 
+	/* o2 clazz module  */
     var o2anonclass = 0;
     var o2anoncategory = 0;
+    var o2anonbundle = 0;
 
     var o2modulespec = function(clazzInfo, clazzName) {
         this.cs = cs;
@@ -2068,12 +2061,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         this.clazzName = clazzName;
     };
     var modspec = o2modulespec.prototype;
-    /*o2modulespec.prototype = {
-
-    };*/
-    //modspec.clazzName = clazzName,
+   
     modspec.slicer = Array.prototype.slice, modspec.category = function(protoProps, traitsName) {
-        var clazzInfo = cs.category(this.clazzName, traitsName || '____', protoProps);
+        var clazzInfo = cs.category(this.clazzName, traitsName || ( ['__', (++o2anoncategory)].join('_')), protoProps);
         this.clazzInfo = clazzInfo;
         return this;
     }, modspec.extend = function(clsss) {
@@ -2100,7 +2090,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
                 return handler.apply(this, [event]);
             }
-        }, '___eventes');
+        }, '___events');
         return orgmodspec;
     }, modspec.requests = function(requests) {
         var orgmodspec = this;
@@ -2114,7 +2104,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
                 return handler.apply(this, [request]);
             }
-        }, '___requestes');
+        }, '___requests');
         return orgmodspec;
     }, modspec.builder = function() {
         return cs.builderFromPdefsp(this.clazzInfo);
@@ -2180,7 +2170,6 @@ define(['jquery', 'exports', 'css'], function($, exports) {
          * @method Oskari.registerLocalization
          */
         registerLocalization : function(props) {
-            /*console.log("registerLocalization",props);*/
             if (props.length) {
                 for (var p = 0; p < props.length; p++) {
                     var pp = props[p];
@@ -2331,6 +2320,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         }
     };
 
+	/* o2 api for event class */	
     bndl.eventCls = function(eventName, constructor, protoProps) {
         var clazzName = ['Oskari', 'event', 'registry', eventName].join('.');
         var rv = bndl.cls(clazzName, constructor, protoProps, {
@@ -2348,6 +2338,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         return rv;
     };
 
+	/* o2 api for request class */
     bndl.requestCls = function(requestName, constructor, protoProps) {
         var clazzName = ['Oskari', 'request', 'registry', requestName].join('.');
         var rv = bndl.cls(clazzName, constructor, protoProps, {
@@ -2365,7 +2356,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         return rv;
     };
 
-    /* note restriction: one for each request - no overrides */
+    /* o2 api for request handlers - note restriction: one for each request - no overrides */
     bndl.requestHandlerCls = function(requestCls, impl) {
         var clazzName = ['Oskari', 'requesthandler', 'registry', requestCls.getName()].join('.');
         var rv = bndl.cls(clazzName, function() {
@@ -2381,7 +2372,13 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         return rv;
     };
 
+	/* o2 api for bundle classes */
     bndl.bundleCls = function(bnldId, clazzName) {
+    	
+    	if( !bnldId ) {
+    		bnldId = ( ['__', (++o2anonbundle)].join('_'));
+    	}
+    	
         var rv = bndl.cls(clazzName, function() {
         }, {
             update : function() {
@@ -2401,7 +2398,6 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             return rv;
         }, rv.start = function(instanceid) {
             var bundleid = this.___bundleIdentifier;
-            console.log(bundleid);
 
             if (!fcd.bundles[bundleid]) {
                 var b = bm.createBundle(bundleid, bundleid);
