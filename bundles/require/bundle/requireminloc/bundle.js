@@ -1,5 +1,5 @@
 define(["oskari"], function(Oskari) {
-    return Oskari.bundleCls('requireminloc', "Oskari.sample.bundle.requireminloc.RequireBundle").category({
+    return Oskari.bundleCls('requireminloc').category({
         create : function() {
             return Oskari.cls().extend("Oskari.userinterface.extension.EnhancedExtension").category({
                 startPlugin : function() {

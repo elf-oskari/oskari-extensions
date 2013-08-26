@@ -372,7 +372,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             this.pullDown(pdefsp);
             this.pushDown(pdefsp);
 
-            return cdef;
+            return pdefsp;
         },
         /**
          * @method category
@@ -531,6 +531,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
                 this.pullDown(pdefsub);
                 this.pushDown(pdefsub);
             }
+            return pdefsp;
         },
         /**
          * @method pullDown
@@ -582,7 +583,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             pdefsp._constructors = constructors;
             pdefsp._superCategory = superClazzMethodCats;
 
-            //return clazz;
+            return pdefsp;
         },
         /**
          * @method printAncestry
@@ -1577,10 +1578,6 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             return bp;
         },
         /**
-         * @method createInstance
-         * @param bundleid
-         * @returns {___bi2}
-         *
          * creates a bundle instance for previously installed and created bundle
          */
         "createInstance" : function(bundleid) {
