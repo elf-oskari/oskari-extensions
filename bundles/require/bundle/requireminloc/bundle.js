@@ -1,7 +1,7 @@
 define(["oskari"], function(Oskari) {
     return Oskari.bundleCls().category({
         create : function() {
-            return Oskari.cls().extend("Oskari.userinterface.extension.EnhancedExtension").category({
+            return Oskari.extensionCls().category({
                 startPlugin : function() {
                     this.setFlyout(Oskari.cls().extend("Oskari.userinterface.extension.EnhancedFlyout").category({
                         startPlugin : function() {
@@ -10,9 +10,7 @@ define(["oskari"], function(Oskari) {
                     }).create(this, {
                         "title" : "require (no-rules-no comments)"
                     }));
-                    this.setTile(Oskari.cls('Oskari.userinterface.extension.DefaultTile').create(this, {
-                        "title" : "require-loc"
-                    }));
+                    this.setDefaultTile("require-loc");
                 }
             }).create('requireminloc');
         }

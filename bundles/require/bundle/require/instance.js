@@ -11,8 +11,8 @@ define(["oskari",
 
     /* 2) Flyout declared in Flyout.js see define above */
 
-    return Oskari.cls('Oskari.sample.bundle.require.RequireBundleInstance').
-    	extend("Oskari.userinterface.extension.EnhancedExtension").category({
+    return Oskari.extensionCls('Oskari.sample.bundle.require.RequireBundleInstance').
+  		category({
 
 		/* this is the placed to create (optional) components tile, flyout etc. */
         startPlugin : function() {
@@ -52,10 +52,7 @@ define(["oskari",
         "sample.SampleRequest" : function(request) {
  			var me = this, loc = me.getLocalization();
  			
-            var evt = sampleEventCls.create(loc.requestHandler.prompt);
-            console.log(evt);
-            
-            this.getSandbox().notifyAll(evt);
+            this.notify('sample.SampleEvent',loc.requestHandler.prompt);
 
             return [loc.requestHandler.text,' ',request.getMessage()].join('');
 

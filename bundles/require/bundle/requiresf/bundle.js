@@ -61,8 +61,8 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
     /* 3) */
     /* we'll extend the	EnhancedExtension base class to setup this bundle's operations */
 
-    var instanceCls = Oskari.cls('Oskari.sample.bundle.requiresf.RequireBundleInstance').
-    	extend("Oskari.userinterface.extension.EnhancedExtension").category({
+    var instanceCls = Oskari.extensionCls('Oskari.sample.bundle.requiresf.RequireBundleInstance').
+    	category({
 
         startPlugin : function() {
 

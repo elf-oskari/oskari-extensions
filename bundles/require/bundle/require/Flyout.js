@@ -16,7 +16,7 @@ define(["oskari", "jquery"], function(Oskari, jQuery, sampleRequestCls) {
             	/* this issues a request which is handled in request handler */
             	/* note: this makes sense as demo only in this context - request are mainly to cross bundle comm */ 
                 var responseMsgFromHandler = 
-                	me.issue('sample.SampleRequest', [loc.clickToRequest.text]);
+                	me.issue('sample.SampleRequest', loc.clickToRequest.text);
 
 				/* let's append the response from request handler to the UI */
                 var msgEl = jQuery('<div />');

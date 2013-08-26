@@ -10,7 +10,7 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
         create : function() {
 
             /* 2) bundle instance */
-            return Oskari.cls().extend("Oskari.userinterface.extension.EnhancedExtension").category({
+            return Oskari.extensionCls().category({
 
                 startPlugin : function() {
 
