@@ -1,5 +1,17 @@
-/* Oskari 1.x compatibility */
-/* This module implements Oskari 1.x bundle loader */
+/* 
+ * Oskari 1.x compatibility mode loader
+ * 
+ * This module will be deprecated for Oskari 2.0
+ * 
+ * This module implements Oskari 1.x loader which will
+ * be replaced with requirejs.org require based implementation.
+ * 
+ * This implements Oskari 1.x loader with require calls.
+ * 
+ * This is free software. 
+ *  
+ */
+
 
 define(['oskari', 'jquery', 'exports', 'css'], function(Oskari, $, exports) {
 
@@ -67,6 +79,12 @@ define(['oskari', 'jquery', 'exports', 'css'], function(Oskari, $, exports) {
         }
     };
 
+	/**
+	 * @class Oskari.BundleLoader
+	 * 
+	 * Oskari 1.x loader 
+	 *  
+	 */
     Oskari.clazz.define('Oskari.BundleLoader', function(manager, cb) {
         this.loader_identifier = ++bundle_loader_id;
         this.manager = manager;
@@ -144,6 +162,10 @@ define(['oskari', 'jquery', 'exports', 'css'], function(Oskari, $, exports) {
         }
     });
 
+	/**
+	 * a set of loader supporting methods for Oskari.BundleManager 
+	 *  
+	 */
     Oskari.clazz.category('Oskari.BundleManager', 'loader_1_x', {
 
         /**
@@ -394,10 +416,10 @@ define(['oskari', 'jquery', 'exports', 'css'], function(Oskari, $, exports) {
         }
     });
 
-    /**
-     * FACADE will have only a couple of methods which trigger alotta operations
-     */
-
+	/**
+	 * a set of loader supporting methods for Oskari.BundleFacade 
+	 *  
+	 */
     Oskari.clazz.category('Oskari.BundleFacade', 'loader_1_x', {
 
         /*

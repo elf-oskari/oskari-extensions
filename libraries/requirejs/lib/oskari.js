@@ -1,5 +1,19 @@
-/* Oskari 2.x
+/* 
+ * 
+ * Oskari 2.0 class system 
+ * 
  * This module implements Oskari clazz system and bundle management.
+ * 
+ * Supports class definintion, inheritance, method categories,
+ * class metadata, class implementation in separate files.
+ *
+ * Supports async loading with class stubs and post definition
+ * inheritance and method category changes.
+ * 
+ * Concepts bundle and bundle instance are used to compose
+ * application from a set of extension modules.
+ * 
+ * This is free software.
  *
  */
 var Oskari;
@@ -22,6 +36,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     }
     /**
      * @class Oskari.bundle_locale
+     * 
+     * a localisation registry 
+     * 
      */
     var bundle_locale = function() {
         this.lang = null;
@@ -47,7 +64,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     };
 
     /**
-     * let's create locale support
+     * singleton localisation registry instance
      */
     var blocale = new bundle_locale();
 
@@ -65,7 +82,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         return _preloaded;
     }
 
-    var nativeadapter = function() {
+    var o2clazzsystem = function() {
         this.packages = {};
         this.protocols = {};
         this.inheritance = {};
@@ -74,7 +91,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         this.globals = {};
     };
 
-    nativeadapter.prototype = {
+    o2clazzsystem.prototype = {
 
         purge : function() {
 
@@ -627,7 +644,11 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         }
     };
 
-    var clazz_singleton = new nativeadapter();
+	/*
+	 * singleton instance of the clazz system 
+	 * 
+	 */
+    var clazz_singleton = new o2clazzsystem();
     var cs = clazz_singleton;
 
     /**
@@ -706,6 +727,15 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         }
     };
 
+	/**
+	 * @class Oskari.BundleManager
+	 * 
+	 * instance of this class is used to create bundles, bundle instances
+	 * and manage instance lifecycle.
+	 * 
+	 * Bundles are identified by 'bundle identifier'.
+	 *  
+	 */
     cs.define('Oskari.BundleManager', function() {
         this.serial = 0;
         this.impls = {};
@@ -1048,7 +1078,18 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         }
     });
 
-    clazz_singleton.define('Oskari.BundleFacade', function(bm) {
+	
+	/* 
+	 * 
+	 * @class Oskari.BundleFacade
+	 *  
+	 * This provides (did provided more in versions 1.x) some 
+	 * helper functions to enhance Oskari.BundleManager
+	 * 
+	 * This adds bundle instance lookup with 'bundle instance identifier' aka bundleinstancename.  
+	 * 
+	 */ 
+    cs.define('Oskari.BundleFacade', function(bm) {
         this.manager = bm;
 
         this.bundles = {};
@@ -1099,13 +1140,17 @@ define(['jquery', 'exports', 'css'], function($, exports) {
      */
 
     /**
-     * let's create bundle manager singleton
+     * singleton instance of Oskari.BundleManager manages lifecycle for bundles and bundle instances.
+     * 
      */
     var bm = cs.create('Oskari.BundleManager');
     bm.clazz = cs;
 
     /**
-     * let's create bundle facade for bundle manager
+     * @class Oskari.BundleFacade
+     * 
+     * pluggable DOM manager. This is the no-op default implementation. 
+     *  
      */
     var fcd = cs.create('Oskari.BundleFacade', bm);
     var ga = cs.global;
@@ -1147,6 +1192,12 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     var o2anonbundle = 0;
 
     /* this is Oskari 2 modulespec prototype which provides a leaner API  */
+   
+   /* @class Oskari.ModuleSpec 
+    * 
+    * helper class instance of which is returned from oskari 2.0 api
+    * Returned class instance may be used to chain class definition calls.
+    */
     cs.define('Oskari.ModuleSpec', function(clazzInfo, clazzName) {
         this.cs = cs;
         this.clazzInfo = clazzInfo;
@@ -1155,28 +1206,50 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     }, {
 
         slicer : Array.prototype.slice,
+        
+        /* @method category 
+         * adds a set of methods to class
+         */
         category : function(protoProps, traitsName) {
             var clazzInfo = cs.category(this.clazzName, traitsName || ( ['__', (++o2anoncategory)].join('_')), protoProps);
             this.clazzInfo = clazzInfo;
             return this;
         },
+        
+        /* @method extend
+         * adds inheritance from  a base class
+         * base class can be declared later but must be defined before instantiation 
+         */          
         extend : function(clsss) {
             var clazzInfo = cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
             this.clazzInfo = clazzInfo;
             return this;
         },
-        construct : function(props) {
-            return cs.construct(this.clazzName, props);
-        },
+        /* @method create
+         * creates an instance of this class
+         */
         create : function() {
             return cs.createWithPdefsp(this.clazzInfo, arguments);
         },
+        
+        /*
+         * @method returns the class name  
+         */
         name : function() {
             return this.clazzName;
         },
+        
+        /*
+         * @method returns class metadata
+         */
         metadata : function() {
             return cs.metadata(this.clazzName);
         },
+        
+        /*
+         * @method events
+         * adds a set of event handlers to class
+         */
         events : function(events) {
             var orgmodspec = this;
             orgmodspec.category({
@@ -1215,6 +1288,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
     /**
      * @static
      * @property Oskari
+     * 
+     * Oskari main entry objects 
      */
     var o2main = {
         bundle_manager : bm, /* */
