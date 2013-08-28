@@ -12,7 +12,7 @@ define(["oskari",
     /* 2) Flyout declared in Flyout.js see define above */
 
     return Oskari.extensionCls('Oskari.sample.bundle.require.RequireBundleInstance').
-  		category({
+  		methods({
 
 		/* this is the placed to create (optional) components tile, flyout etc. */
         startPlugin : function() {

@@ -11,6 +11,11 @@ require.config({
         _packages_ : '../../../packages',
         _resources_ : '../../../resources'
 
+    },
+    config: {
+    	i18n: {
+            locale: 'fi'
+        }
     }
 
 });
@@ -50,8 +55,9 @@ function($, Oskari) {
                 		"_bundles_/require/bundle/requireminimal/bundle", 
                 			"_bundles_/require/bundle/requirenr/bundle", 
                 				"_bundles_/require/bundle/requireminloc/bundle", 
-                					"_bundles_/require/bundle/requirenop/bundle"], 
-                	function(rclassic, rsinglefile, rminimal, rnorules, rminlinesofcode, rnop) {
+                					"_bundles_/require/bundle/requirenop/bundle", 
+                					"_bundles_/require/bundle/requirei18n/bundle"],
+                	function(rclassic, rsinglefile, rminimal, rnorules, rminlinesofcode, rnop,ri18n) {
 
                     /* and starting */
                     rclassic.start();
@@ -60,6 +66,7 @@ function($, Oskari) {
                     rnorules.start();
                     rminlinesofcode.start();
                     rnop.start();
+                    ri18n.start();
 
                 })
             });

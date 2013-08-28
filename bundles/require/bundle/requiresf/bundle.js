@@ -9,7 +9,7 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
     /* 2) */
     /* we'll extend the default flyout for this sample */
     var flyoutCls = Oskari.cls("Oskari.sample.bundle.requiresf.RequireFlyout").
-    	extend("Oskari.userinterface.extension.EnhancedFlyout").category({
+    	extend("Oskari.userinterface.extension.EnhancedFlyout").methods({
 
 		/* create some UI */
         startPlugin : function() {
@@ -62,7 +62,7 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
     /* we'll extend the	EnhancedExtension base class to setup this bundle's operations */
 
     var instanceCls = Oskari.extensionCls('Oskari.sample.bundle.requiresf.RequireBundleInstance').
-    	category({
+    	methods({
 
         startPlugin : function() {
 
@@ -101,7 +101,7 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
     /* we'll register the Bundle with a bundleCls call */
 
     return Oskari.bundleCls('requiresf', "Oskari.sample.bundle.requiresf.RequireBundle").
-    	category({
+    	methods({
         create : function() {
 
             return instanceCls.create('requiresf');

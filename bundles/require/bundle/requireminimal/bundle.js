@@ -5,17 +5,17 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
 
     /* This module declares a bundle, a bundle instance with tile, flyout */
     /* 1) bundle */
-    return Oskari.bundleCls('requireminimal', "Oskari.sample.bundle.requireminimal.RequireBundle").category({
+    return Oskari.bundleCls('requireminimal', "Oskari.sample.bundle.requireminimal.RequireBundle").methods({
         /* this is the required method that will fire up bundle with creating a bundle instance */
         create : function() {
 
             /* 2) bundle instance */
-            return Oskari.extensionCls().category({
+            return Oskari.extensionCls().methods({
 
                 startPlugin : function() {
 
                     /* 3) flyout - let's create an instance of flyout clazz and register it to the zystem */
-                    this.setFlyout(Oskari.cls().extend("Oskari.userinterface.extension.EnhancedFlyout").category({
+                    this.setFlyout(Oskari.cls().extend("Oskari.userinterface.extension.EnhancedFlyout").methods({
 
                         /* create some UI */
                         startPlugin : function() {
