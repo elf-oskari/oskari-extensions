@@ -14,8 +14,6 @@ New features in this release
 # requirejs.org (AMD) compatibility 
  
  
- ## Accessing Oskari 
- 
  ```
  define(["oskari"], function(Oskari) {
  	
@@ -25,7 +23,7 @@ New features in this release
  ```
  
  
-# defining a class using Oskari 2.0 API 
+# defining a class 
 
 ```
  define(["oskari"], function(Oskari) {
@@ -36,7 +34,7 @@ New features in this release
  
  ```
 
-# defining a class' methods using Oskari 2.0 API 
+# defining a class' methods 
 
 ```
  define(["oskari"], function(Oskari) {
@@ -53,7 +51,7 @@ New features in this release
  ```
  
  
-# defining a named class with methods using Oskari 2.0 API 
+# defining a named class with methods 
 
 ```
  define(["oskari"], function(Oskari) {
@@ -69,7 +67,7 @@ New features in this release
  
  ```
  
-# defining a named class with constructor and methods using Oskari 2.0 API 
+# defining a named class with constructor and methods 
 
 ```
  define(["oskari"], function(Oskari) {
@@ -85,7 +83,7 @@ New features in this release
  
  ```
 
-# instantiating a class  using Oskari 2.0 API 
+# instantiating a class  
 
 ```
  define(["oskari"], function(Oskari) {
@@ -103,7 +101,7 @@ New features in this release
  
  ```
 
-# instantiating a named class  using Oskari 2.0 API 
+# instantiating a named class  
 
 ```
  define(["oskari"], function(Oskari) {
@@ -116,7 +114,7 @@ New features in this release
  ```
  
  
-# inheriting from a (named) superclass using Oskari 2.0 API 
+# inheriting from a (named) superclass 
 
 ```
  define(["oskari"], function(Oskari) {
@@ -178,7 +176,7 @@ New features in this release
  
  ```
 
-# defining a extension bundle instance class using Oskari 2.0 API 
+# defining a extension bundle instance class 
 
  ./instance.js :
  
@@ -203,7 +201,7 @@ New features in this release
  ```
 
 
-# defining a extension bundle class using Oskari 2.0 API
+# defining a extension bundle class
 
  ./bundle.js : 
 
@@ -222,7 +220,7 @@ New features in this release
  
  ```
 
-# registering a extension bundle instance to listen to events using Oskari 2.0 API 
+# registering a extension bundle instance to listen to events 
 
  ./instance.js :
  
@@ -252,7 +250,7 @@ New features in this release
  
  ```
 
-# notifying events using Oskari 2.0 API
+# notifying events
 
 Notification (within aderived class method of Flyout or Instance ).
 Method creates an instance of event class and posts notification to any listeners registered to the event.
@@ -263,7 +261,7 @@ this.notify('sample.SampleEvent','Something or other happened');
 ```
 
 
-# issuing requests using Oskari 2.0 API
+# issuing requests
 
 Issuing a request (within aderived class method of Flyout or Instance )
 Method creates an instance of request class and send request to THE registered request handler - if any.
@@ -275,7 +273,7 @@ var responseFromHandler =
 ```
 
  
-# defining an event class using Oskari 2.0 API
+# defining an event class
 
 Events shall be used for inter-bundle communications.
 Event class must be included by some part of code. Event listeners use event identifiers to enable
@@ -300,7 +298,7 @@ define(["oskari"], function(Oskari) {
 
 ```
 
-# defining a request class using Oskari 2.0 API
+# defining a request class
 
 Requests are used mostly in inter-bundle communications. Request classes must be
 included by the request handler module.
@@ -324,7 +322,7 @@ define(["oskari"], function(Oskari) {
 
 ```
  
-# registering a extension bundle instance as a request handler using Oskari 2.0 API
+# registering a extension bundle instance as a request handler
 
 Request class must be included in handler. Client uses request identifier to enable
  loose coupling of bundles and code.  
