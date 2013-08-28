@@ -25,30 +25,29 @@ New features in this release
 
 # defining a named class (AMD way)
 
+./MyClass.js
 ```
  define(["oskari"], function(Oskari) {
  	
  	return Oskari.cls();
  	
  }
- 
  ```
 
-# defining a named class (AMD way)
+# Accessing a named class from other module
 
-```
- define(["oskari"], function(Oskari) {
- 	
- 	return Oskari.cls();
- 	
- }
- 
+ ```
+  require(["./MyClass"],function(MyClass)Ê{
+      var instance = MyClass.create();
+
+  }); 
  ```
 
  
- 
-# defining a named class (Oskari way)
+# defining a class with a name for Oskari class system
 
+
+./MyClass.js
 ```
  define(["oskari"], function(Oskari) {
  	
