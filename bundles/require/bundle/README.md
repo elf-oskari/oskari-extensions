@@ -37,7 +37,7 @@ New features in this release
 # Accessing a named class from other module
 
  ```
-  require(["./MyClass"],function(MyClass)Ê{
+  require(["./MyClass"],function(MyClass) {
       var instance = MyClass.create();
 
   }); 
@@ -102,7 +102,7 @@ New features in this release
  	    }
  	  });
  	
- }
+ })
  
  ```
 
@@ -120,7 +120,7 @@ New features in this release
  	  
  	var myClassInstance = MyClass.create();
  	
- }
+ })
  
  ```
 
@@ -132,12 +132,43 @@ New features in this release
  	var myClassInstance = Oskari.cls('My.Class').create('arg1');
 	
  	
- }
+ })
  
  ```
+
+# defining a base and a subclass
+
+```
+ define(["oskari"], function(Oskari) {
+ 	
+ 	var Base = Oskari.cls("My.BaseClass").
+		methods({
+ 		
+ 		baseClsMethod : function() {
+ 		    
+ 		
+ 		}
+ 		
+ 	});
+		
+
+ 	var SubClass = Oskari.cls("My.SubClass").
+                extend("My.BaseClass").
+		methods({
+ 		
+ 		subClsMethod : function() {
+ 		    
+ 		
+ 		}
+ 		
+ 	});
+
+	 	
+ })
  
+ ``` 
  
-# inheriting from a (named) superclass 
+# extending a base class to add some functionality
 
 ```
  define(["oskari"], function(Oskari) {
