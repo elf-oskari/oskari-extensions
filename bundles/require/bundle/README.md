@@ -355,8 +355,52 @@ Request class must be included in handler. Client uses request identifier to ena
  
  ```
 
+# setting localization for a bundle instance
 
-## Accessing Oskari with compatibility loader enabled 
+```
+define(["oskari", "i18n!./nls/locale"], function(Oskari, locale) {
+
+    return Oskari.bundleCls().methods({
+        create : function() {
+
+            var extensionInstance = Oskari.extensionCls().methods({
+
+                startPlugin : function() {
+                	                	
+                	var flyout = 
+                		Oskari.cls().extend("Oskari.userinterface.extension.EnhancedFlyout").
+                    		methods({
+
+                        	startPlugin : function() {
+                            	var el = this.getEl(), 
+                            		msg = this.getLocalization().message
+                            	
+                            	el.append(msg);
+
+                        	}
+                    	}).create(this, locale.flyout); /* instance and locale as parameter to constructor */
+                		
+
+                    this.setFlyout(flyout);
+                    this.setDefaultTile(locale.tile.title);
+
+                }
+            }).create('i18nextension',locale); /* instancename, locale as parameter to constructor */
+            
+            extensionInstance.setLocalization(locale);
+            
+            return extensionInstance;
+
+        }
+    });
+
+
+});
+
+```
+
+
+# Accessing Oskari with compatibility loader enabled 
  
  ```
  define(["oskari","oskariloader"], function(Oskari) {
