@@ -387,8 +387,6 @@ define(["oskari", "i18n!./nls/locale"], function(Oskari, locale) {
                 }
             }).create('i18nextension',locale); /* instancename, locale as parameter to constructor */
             
-            extensionInstance.setLocalization(locale);
-            
             return extensionInstance;
 
         }
