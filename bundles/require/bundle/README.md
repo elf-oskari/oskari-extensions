@@ -12,6 +12,7 @@ New features in this release
 
 
 # requirejs.org (AMD) compatibility 
+
  
  
  ```
@@ -21,9 +22,32 @@ New features in this release
  }
  
  ```
+
+# defining a named class (AMD way)
+
+```
+ define(["oskari"], function(Oskari) {
+ 	
+ 	return Oskari.cls();
+ 	
+ }
+ 
+ ```
+
+# defining a named class (AMD way)
+
+```
+ define(["oskari"], function(Oskari) {
+ 	
+ 	return Oskari.cls();
+ 	
+ }
+ 
+ ```
+
  
  
-# defining a class 
+# defining a named class (Oskari way)
 
 ```
  define(["oskari"], function(Oskari) {
@@ -34,7 +58,7 @@ New features in this release
  
  ```
 
-# defining a class' methods 
+# defining a class with some  methods 
 
 ```
  define(["oskari"], function(Oskari) {
