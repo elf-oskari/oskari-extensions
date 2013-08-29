@@ -1,7 +1,6 @@
 define(["oskari", "jquery"], function(Oskari, jQuery, sampleRequestCls) {
 
-    return Oskari.cls("Oskari.sample.bundle.require.RequireFlyout").
-    	extend("Oskari.userinterface.extension.EnhancedFlyout").
+    return Oskari.flyoutCls().
     	methods({
 
         /* set up the 'ui' in given element */

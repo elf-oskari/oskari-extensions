@@ -1208,9 +1208,17 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         slicer : Array.prototype.slice,
         
         /* @method category 
-         * adds a set of methods to class
+         * adds a set of methods to class 
          */
         category : function(protoProps, traitsName) {
+            var clazzInfo = cs.category(this.clazzName, traitsName || ( ['__', (++o2anoncategory)].join('_')), protoProps);
+            this.clazzInfo = clazzInfo;
+            return this;
+        },
+        /* @method methods
+         * adds a set of methods to class - alias to category
+         */
+        methods : function(protoProps, traitsName) {
             var clazzInfo = cs.category(this.clazzName, traitsName || ( ['__', (++o2anoncategory)].join('_')), protoProps);
             this.clazzInfo = clazzInfo;
             return this;
@@ -1283,6 +1291,8 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         builder : function() {
             return cs.builderFromPdefsp(this.clazzInfo);
         }
+        
+        
     });
 
     /**
@@ -1505,6 +1515,9 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             return fcd.getConfiguration();
         }
     };
+    
+    
+    
 
     /* o2 api for event class */
     o2main.eventCls = function(eventName, constructor, protoProps) {
@@ -1541,10 +1554,27 @@ define(['jquery', 'exports', 'css'], function($, exports) {
 
         return rv;
     };
+    
+    
+    o2main._baseClassFor = {
+    	'extension' : "Oskari.userinterface.extension.EnhancedExtension",
+    	'bundle' : "Oskari.mapframework.bundle.extension.ExtensionBundle",
+    	'tile' : "Oskari.userinterface.extension.EnhancedTile",
+    	'flyout' : "Oskari.userinterface.extension.EnhancedFlyout",
+    	'view' : "Oskari.userinterface.extension.EnhancedView"
+    };
+    
 
     /* o2 api for bundle classes */
+   
+   /* @static @method Oskari.extensionCls
+    * 
+    */ 
     o2main.extensionCls = function(clazzName) {
-        return o2main.cls(clazzName).extend("Oskari.userinterface.extension.EnhancedExtension")
+        return o2main.cls(clazzName).extend(this._baseClassFor.extension);
+    /* @static @method Oskari.bundleCls 
+     * 
+     */
     }, o2main.bundleCls = function(bnldId, clazzName) {
 
         if (!bnldId) {
@@ -1556,7 +1586,7 @@ define(['jquery', 'exports', 'css'], function($, exports) {
             update : function() {
             }
         }, {
-            "protocol" : ["Oskari.bundle.Bundle", "Oskari.mapframework.bundle.extension.ExtensionBundle"],
+            "protocol" : ["Oskari.bundle.Bundle", this._baseClassFor.bundle],
             "manifest" : {
                 "Bundle-Identifier" : bnldId
             }
@@ -1595,7 +1625,25 @@ define(['jquery', 'exports', 'css'], function($, exports) {
         };
 
         return rv;
-    };
+    },
+    /**
+     * @static @method flyoutCls 
+     */
+     o2main.flyoutCls = function(clazzName) {
+        return o2main.cls(clazzName).extend(this._baseClassFor.flyout);
+     }
+    /* @static @method Oskari.tileCls 
+     * 
+     */
+    o2main.tileCls = function(clazzName) {
+        return o2main.cls(clazzName).extend(this._baseClassFor.tile);
+      },
+    /* @static @method Oskari.bundleCls 
+     * 
+     */
+     o2main.viewCls = function(clazzName) {
+        return o2main.cls(clazzName).extend(this._baseClassFor.view);
+     };
 
     ga.apply(cs, ['Oskari', o2main]);
 

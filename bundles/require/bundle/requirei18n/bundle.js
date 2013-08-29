@@ -16,7 +16,7 @@ define(["oskari", "i18n!./nls/locale"], function(Oskari, locale) {
                 	                	
                     /* 3) flyout - let's create an instance of flyout clazz and register it to the zystem */               	
                 	var flyout = 
-                		Oskari.cls().extend("Oskari.userinterface.extension.EnhancedFlyout").
+                		Oskari.flyoutCls().
                     		methods({
 
                         	/* create some UI */

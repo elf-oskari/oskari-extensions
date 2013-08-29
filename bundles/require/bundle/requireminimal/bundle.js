@@ -15,7 +15,7 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
                 startPlugin : function() {
 
                     /* 3) flyout - let's create an instance of flyout clazz and register it to the zystem */
-                    this.setFlyout(Oskari.cls().extend("Oskari.userinterface.extension.EnhancedFlyout").methods({
+                    this.setFlyout(Oskari.flyoutCls().methods({
 
                         /* create some UI */
                         startPlugin : function() {

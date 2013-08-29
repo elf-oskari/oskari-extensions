@@ -1,4 +1,4 @@
-/**
+	/**
  * @class Oskari.userinterface.extension.EnhancedExtension
  *
  *
@@ -12,10 +12,10 @@ Oskari.clazz.define("Oskari.userinterface.extension.EnhancedExtension",
  * @param tileClazz {String} an optional class name for
  *
  */
-function(name) {
+function(name,locale) {
     this.sandbox = null;
     this.plugins = {};
-    this._localization = null;
+    this._localization = locale;
     this.conf = {
         "name" : name
     };
@@ -50,6 +50,19 @@ function(name) {
      */
     update : function() {
     },
+    
+    
+    /**
+     *@method setLocalization
+     * 
+     * 
+     * localisation may be set or loaded from Oskari loc registry
+     *  
+     */
+    setLocalization : function(loc) {
+    	this._localization = loc;
+    },
+    
     /**
      * @method getLocalization
      * Convenience method to call from Tile and Flyout

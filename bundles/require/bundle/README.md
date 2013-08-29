@@ -96,7 +96,12 @@ New features in this release
 ```
  define(["oskari"], function(Oskari) {
  	
- 	return Oskari.cls('My.Class', function(arg1) { this.arg = arg1; /* constructor */ },
+ 	return Oskari.cls('My.Class',
+ 	  /* constructor */ 
+ 	  function(arg1) { 
+ 	          this.arg = arg1;  
+ 	  },
+ 	  /* member funcs */
  	  {
  	     myMemberFunc: function() {
  	    	return "Hello";
@@ -130,14 +135,15 @@ New features in this release
 ```
  define(["oskari"], function(Oskari) {
  	
- 	var myClassInstance = Oskari.cls('My.Class').create('arg1');
+ 	var MyClass = Oskari.cls('My.Class'); 
+ 	var myClassInstance = MyClass.create('arg1');
 	
  	
  })
  
  ```
 
-# defining a base and a subclass
+# defining a base and a subclass by name
 
 ```
  define(["oskari"], function(Oskari) {
@@ -167,7 +173,28 @@ New features in this release
 	 	
  })
  
- ``` 
+ ```
+ 
+ # defining a base and a subclass 
+
+```
+ define(["oskari", "./MyBaseClass"], function(Oskari,MyBaseClass) {
+    
+    var SubClass = Oskari.cls("My.SubClass").
+                extend(MyBaseClass).
+        methods({
+        
+        subClsMethod : function() {
+            
+        
+        }
+        
+    });
+
+        
+ })
+ 
+ ```  
  
 # extending a base class to add some functionality
 

@@ -8,8 +8,7 @@ define(["oskari", "./locale/fi", "./locale/en"], function(Oskari) {
 
     /* 2) */
     /* we'll extend the default flyout for this sample */
-    var flyoutCls = Oskari.cls("Oskari.sample.bundle.requiresf.RequireFlyout").
-    	extend("Oskari.userinterface.extension.EnhancedFlyout").methods({
+    var flyoutCls = Oskari.flyoutCls().methods({
 
 		/* create some UI */
         startPlugin : function() {

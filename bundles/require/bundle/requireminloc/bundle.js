@@ -3,7 +3,7 @@ define(["oskari"], function(Oskari) {
         create : function() {
             return Oskari.extensionCls().methods({
                 startPlugin : function() {
-                    this.setFlyout(Oskari.cls().extend("Oskari.userinterface.extension.EnhancedFlyout").methods({
+                    this.setFlyout(Oskari.flyoutCls().methods({
                         startPlugin : function() {
                             this.getEl().append("require based 'extreme' implementation with no vars and nested anonymous classes");
                         }

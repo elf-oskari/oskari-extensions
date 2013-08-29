@@ -3,7 +3,7 @@ define(["oskari"], function(Oskari) {
         create : function() {
             return Oskari.extensionCls().methods({
                 startPlugin : function() {
-                    this.setFlyout(Oskari.cls("Oskari.userinterface.extension.EnhancedFlyout").create(this, {
+                    this.setFlyout(Oskari.flyoutCls().create(this, {
                         "title" : "require (no-op implementation)"
                     }));
                     this.setDefaultTile("require-nop");
