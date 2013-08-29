@@ -37,7 +37,8 @@ New features in this release
 # Accessing a named class from other module
 
  ```
-  require(["./MyClass"],function(MyClass) {
+  define(["./MyClass"],function(MyClass) {
+      
       var instance = MyClass.create();
 
   }); 
