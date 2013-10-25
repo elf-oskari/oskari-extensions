@@ -9,7 +9,7 @@
 define(["oskariapi","mapfull","divmanazer"],
 	
   /* */ 
-  function(Oskari, MapFullBundle, DivManazer) {
+  function(Oskari, MapFullBundle, DivManazerBundle) {
 	
 	 // from i18n in real life
     var locale = {
@@ -23,7 +23,6 @@ define(["oskariapi","mapfull","divmanazer"],
     };
     
     // Flyout, Extension and Bundle
-
     var Flyout = Oskari.Flyout.extend({
         startPlugin : function() {
             var el = this.getEl(), msg = this.getLocalization().message;
@@ -45,10 +44,9 @@ define(["oskariapi","mapfull","divmanazer"],
     });
 
     
-    // App
-    
+    // App    
     Oskari.Application
-      .setBundles([MapFullBundle, DivManazer, Bundle])
+      .setBundles([MapFullBundle, DivManazerBundle, Bundle])
       .start()
       .success(function() {
     	  console.log("running");
