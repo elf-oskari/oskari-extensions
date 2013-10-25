@@ -9,21 +9,23 @@ define([ "./api/oskariapi", "mapfull", "divmanazer" ],
 
 /* */
 function(Oskari, Mapping, DIVManager) {
+	
 
-        /* Locale, Flyout, Extension and Bundle form a Oskari extension */
-
-        /* Locale comes from i18n in real life */
-        var locale = {
-           tile : {
-             title : 'X'
-           },
-           flyout : {
-             message : 'Oskari 2.0',
-             title : 'X'
-           }
-        };
-
-        /* Flyout is a generic UI Component for DivManazer */
+        /* 1) DECLARE ---------------------------------------------------------- */ 
+        /* Note! Nothing is visible or instantiated before phase 2) see below */ 
+	
+	 	/* Let's declare a Locale for our bundle ( comes from i18n in real life ) */
+    	var locale = {
+         tile : {
+           title : 'X'
+         },
+         flyout : {
+           message : 'Oskari 2.0',
+           title : 'X'
+         }
+    	};
+	        
+        /* Let's declare a Flyout is a generic UI Component for DivManazer */
         var Flyout = Oskari.Flyout
           .extend({
               startPlugin : function() {
@@ -32,7 +34,7 @@ function(Oskari, Mapping, DIVManager) {
               }
           });
 
-        /* Extension is required to bind to DivManazer */
+        /* Let's declare a Extension which is required to work with DivManazer */
         var Extension = Oskari.Extension
             .extend({
               startPlugin : function() {
@@ -40,8 +42,9 @@ function(Oskari, Mapping, DIVManager) {
                 this.setFlyout(Flyout.create(this, this.getLocalization('flyout')));
               }
             });
-
-        /* Bundle is a module with a predefined lifecycle: create, start, stop */
+        
+        /* Let's declare a Bundle which is a module with a 
+         *   predefined lifecycle: create, start, stop */
         var Bundle = Oskari.Bundle
           .extend({
         	 extension: Extension,
@@ -49,10 +52,21 @@ function(Oskari, Mapping, DIVManager) {
         	 configuration: { sample: 'setting' }
           });
 
-        
-        // App
+        /* Let's register our bundles 
+         * (two from referenced modules and one declared above */
         Oskari.Application
-          .setBundles([ Mapping, DIVManager, Bundle ])
+          .setBundles([ 
+             /* referenced bundles */
+             Mapping, DIVManager, 
+             /* the one declared above */
+             Bundle 
+          ]);
+         
+        
+        /* 2) START ----------------------------------------------------------- */
+        /* This is where extensions are instantiated and the application starts */
+        
+        Oskari.Application
           .start()
           .success(function() {
             console.log("running");
