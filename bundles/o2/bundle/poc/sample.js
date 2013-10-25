@@ -1,4 +1,15 @@
-define(["oskariapi",function(Oskari) {
+
+/* require conf sets up
+ * 
+ *   mapfull ->    "/bundles/leaflet/bundle/mapfull"
+ *   divmanazer -> "/bundles/bootstrap/bundle/divmanazer/module"
+ * 
+ */
+
+define(["oskariapi","mapfull","divmanazer"],
+	
+  /* */ 
+  function(Oskari, MapFullBundle, DivManazer) {
 	
 	 // from i18n in real life
     var locale = {
@@ -37,7 +48,7 @@ define(["oskariapi",function(Oskari) {
     // App
     
     Oskari.Application
-      .setBundles([Bundle])
+      .setBundles([MapFullBundle, DivManazer, Bundle])
       .start().
       success(function() {
     	  console.log("running");
