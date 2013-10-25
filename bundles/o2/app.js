@@ -6,10 +6,10 @@
  * 
  */
 
-define(["oskariapi","mapfull","divmanazer"],
+define(["./api/oskariapi","mapfull","divmanazer"],
 	
   /* */ 
-  function(Oskari, MapFullBundle, DivManazerBundle) {
+  function(Oskari, Mapping, DIVManager) {
 	
 	 // from i18n in real life
     var locale = {
@@ -46,7 +46,7 @@ define(["oskariapi","mapfull","divmanazer"],
     
     // App    
     Oskari.Application
-      .setBundles([MapFullBundle, DivManazerBundle, Bundle])
+      .setBundles([Mapping, DIVManager, Bundle])
       .start()
       .success(function() {
     	  console.log("running");
