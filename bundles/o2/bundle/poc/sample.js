@@ -49,8 +49,8 @@ define(["oskariapi","mapfull","divmanazer"],
     
     Oskari.Application
       .setBundles([MapFullBundle, DivManazer, Bundle])
-      .start().
-      success(function() {
+      .start()
+      .success(function() {
     	  console.log("running");
     	  
       });
