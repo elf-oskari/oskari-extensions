@@ -6,9 +6,12 @@ define("oskari", function(Oskari) {
 
     var cs = Oskari.clazz;
     
+   
     /* Patches required to Oskari 1.0 */
-
+   
+    
     /* Patch to enable common extend({  methods ... }) type of coding */
+    /* TODO: Apply this patch to require oskari.js */
     Oskari.clazz.category('Oskari.ModuleSpec', 'oskari-2.0-API-extend', {
         extend : function(clsss) {
 
@@ -32,6 +35,7 @@ define("oskari", function(Oskari) {
     });
     
     /* Simplified Application API for Oskari 2.0 */
+    /* TODO: move to final location */
     var App = Oskari.cls(undefined,function() {
     	this.instances = {};
     }).methods({
@@ -93,13 +97,19 @@ define("oskari", function(Oskari) {
         }
     });
 
-    /* Singleton App */
-    Oskari.Application = App;
 
+    /* DIVManazer shortcuts */
+    /* TODO: move to final location */
+    
     /* Simplified Tile, Flyout, Extension and Bundle API for Oskari 2.0 */
     Oskari.Tile = Oskari.tileCls();
     Oskari.Flyout = Oskari.flyoutCls();
     Oskari.Extension = Oskari.extensionCls();
+    
+    /* Generic shortcuts */
+    /* TODO: move to final location */
+    
+    Oskari.Application = App;
     
     var defaultIdentifier = 0;
     Oskari.Bundle = Oskari.bundleCls().extend({
