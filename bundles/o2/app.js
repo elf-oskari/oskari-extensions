@@ -54,7 +54,10 @@ function(Oskari, Mapping, DIVManager) {
 
         /* Let's register our bundles 
          * (two from referenced modules and one declared above */
-        Oskari.Application
+        var myApp = Oskari.Application.
+          .create();
+
+        myApp
           .setBundles([ 
              /* referenced bundles */
              Mapping, DIVManager, 
@@ -66,7 +69,7 @@ function(Oskari, Mapping, DIVManager) {
         /* 2) START ----------------------------------------------------------- */
         /* This is where extensions are instantiated and the application starts */
         
-        Oskari.Application
+        myApp
           .start()
           .success(function() {
             console.log("running");

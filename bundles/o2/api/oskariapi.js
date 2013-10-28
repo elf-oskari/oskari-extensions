@@ -94,7 +94,7 @@ define("oskari", function(Oskari) {
     });
 
     /* Singleton App */
-    Oskari.Application = App.create();
+    Oskari.Application = App;
 
     /* Simplified Tile, Flyout, Extension and Bundle API for Oskari 2.0 */
     Oskari.Tile = Oskari.tileCls();
