@@ -126,9 +126,10 @@ define("oskari", function(Oskari) {
                    var configProps = this.configuration;
                    
                	   if (configProps) {
+                      instance.conf = instance.conf||{};
                       for (ip in configProps) {
                           if (configProps.hasOwnProperty(ip)) {
-                        	  instance[ip] = configProps[ip];
+                        	  instance.conf[ip] = configProps[ip];
                           }
                       }
                    }
@@ -159,23 +160,7 @@ define("oskari", function(Oskari) {
     Oskari.Flyout = Oskari.flyoutCls();
     Oskari.Extension = Oskari.extensionCls();
 
-    /* Shortcut to Shorcuts */
-   Oskari.El = function(title,elContent) {
-     return confBundle.extend({
-       extension: Oskari.Extension.extend({
-          startPlugin : function() {
-             this.setDefaultTile(title);
-             this.setFlyout(Oskari.Flyout.extend({
-               startPlugin : function() {
-                 this.getEl().append(elContent);
-               }
-             }).create(this, { title: title } ));
-          }
-      })
-    });
-   };
-
-   Oskari.ExtensionEl = function(title,elContent) {
+    Oskari.ExtensionEl = function(title,elContent) {
      return Oskari.Extension.extend({
           startPlugin : function() {
              this.setDefaultTile(title);

@@ -9,7 +9,8 @@
 define([ "./api/oskariapi", "mapfull", "divmanazer","jquery" ],
   function(Oskari, Mapping, DIVManager,jQuery) {
  
-  var HelloWorld = Oskari.El("Hello",jQuery('<div>World!</div>'));
+  var HelloWorldExtension = Oskari.ExtensionEl("Hello",jQuery('<div>World!</div>'));
+  var HelloWorld = Oskari.Bundle(HelloWorldExtension);
 
   Oskari.Application.create()
     .setBundles([
