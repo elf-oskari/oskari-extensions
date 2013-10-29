@@ -52,7 +52,7 @@ function(Oskari, Mapping, DIVManager) {
     	
 
         /* Let's declare a Extension which is required to work with DivManazer */
-        var Extension2 = Oskari.ExtensionEl('Shortcut',"<div>Hello World");
+        var Extension2 = Oskari.ExtensionEl('Shortcut',"Hello World");
         var Bundle2 = Oskari.Bundle(Extension2);
         
 
