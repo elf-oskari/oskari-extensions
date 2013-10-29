@@ -90,7 +90,11 @@ function(Oskari, Mapping, DIVManager) {
         myApp
           .start()
           .success(function() {
-            console.log("running");
+            console.log("running");	
+	     /* extensions may be added at any time (requirements permitting) */
+		 var Extension4 = Oskari.ExtensionEl('Additional',"Additional Hello World");
+                 var Bundle4 = Oskari.Bundle(Extension4);
+		 Bundle4.start();
 
           });
 
