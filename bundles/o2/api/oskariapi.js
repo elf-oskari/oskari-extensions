@@ -102,13 +102,7 @@ define("oskari", function(Oskari) {
     });
 
 
-    /* DIVManazer shortcuts */
-    /* TODO: move to final location */
-    
-    /* Simplified Tile, Flyout, Extension and Bundle API for Oskari 2.0 */
-    Oskari.Tile = Oskari.tileCls();
-    Oskari.Flyout = Oskari.flyoutCls();
-    Oskari.Extension = Oskari.extensionCls();
+   
     
     /* Generic shortcuts */
     /* TODO: move to final location */
@@ -152,6 +146,19 @@ define("oskari", function(Oskari) {
     
     var confBundle = ConfigurableBundle.create();
 
+ Oskari.Bundle = function(extension, locale, configuration) {
+        return confBundle.extend({ extension: extension, locale: locale, configuration: configuration } );
+    };
+
+
+    /* DIVManazer shortcuts */
+    /* TODO: move to final location */
+    
+    /* Simplified Tile, Flyout, Extension and Bundle API for Oskari 2.0 */
+    Oskari.Tile = Oskari.tileCls();
+    Oskari.Flyout = Oskari.flyoutCls();
+    Oskari.Extension = Oskari.extensionCls();
+
     /* Shortcut to Shorcuts */
    Oskari.El = function(title,elContent) {
      return confBundle.extend({
@@ -181,9 +188,7 @@ define("oskari", function(Oskari) {
       });
     };
  
-    Oskari.Bundle = function(extension, locale, configuration) {
-        return confBundle.extend({ extension: extension, locale: locale, configuration: configuration } );
-    };
+   
  
     
     return Oskari;
