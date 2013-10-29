@@ -147,8 +147,8 @@ define("oskari", function(Oskari) {
     
     var confBundle = ConfigurableBundle.create();
 
- Oskari.Bundle = function(extension, locale, configuration) {
-        return confBundle.extend({ extension: extension, locale: locale, configuration: configuration } );
+ Oskari.Bundle = function(extension, locale, configuration,identifier) {
+        return confBundle.extend({ extension: extension, locale: locale, configuration: configuration, identifier: identifier } );
     };
 
 
