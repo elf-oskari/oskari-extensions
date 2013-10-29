@@ -165,7 +165,7 @@ define("oskari", function(Oskari) {
              }).create(this, { title: title } ));
           }
       })
-    }).start();
+    });
    };
 
     
