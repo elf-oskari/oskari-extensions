@@ -1,3 +1,4 @@
+/* Sample for o2 new API */
 /* require conf sets up
  * 
  *   mapfull ->    "/bundles/leaflet/bundle/mapfull"

@@ -1,3 +1,4 @@
+/* Sample for o2 new API */
 /*
  * PoC: API for Oskari 2.0
  *
