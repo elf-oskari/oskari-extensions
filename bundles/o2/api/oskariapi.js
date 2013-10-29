@@ -13,21 +13,24 @@ define("oskari", function(Oskari) {
     /* Patch to enable common extend({  methods ... }) type of coding */
     /* TODO: Apply this patch to require oskari.js */
     Oskari.clazz.category('Oskari.ModuleSpec', 'oskari-2.0-API-extend', {
-        extend : function(clsss) {
+        extend : function(extendDefinition) {
 
-            var t = typeof clsss;
+            var t = typeof extendDefinition;
 
             if (t === "string") {
-                var clazzInfo = cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
+                var clazzInfo = cs.extend(this.clazzName, extendDefinition.length ? extendDefinition : [extendDefinition]);
                 this.clazzInfo = clazzInfo;
-            } else if (t === "object" && clsss._) {
-                this.category(clsss._.categories[clsss._.composition.clazzName]);
-            } else if (t === "object" && clsss.length) {
-                var clazzInfo = cs.extend(this.clazzName, clsss.length ? clsss : [clsss]);
+            } else if (t === "object" && extendDefinition.length) {
+            	/* derive from given classes */ 
+                var clazzInfo = cs.extend(this.clazzName, extendDefinition.length ? extendDefinition : [extendDefinition]);
                 this.clazzInfo = clazzInfo;
             } else {
-                this.category(clsss);
-
+            	/* derive a class from 'this' and apply category to derived class */ 
+            	/* used to implement Oskari.Flyout.extend({ funcadelic: function() {} }); kind of adhoc inheritance */
+            	var cls = Oskari.cls();
+            	cls.extend(this.clazzName);
+            	if( extendDefinition ) cls.category(extendDefinition);
+                return cls;
             }
 
             return this;
@@ -112,17 +115,41 @@ define("oskari", function(Oskari) {
     Oskari.Application = App;
     
     var defaultIdentifier = 0;
-    Oskari.Bundle = Oskari.bundleCls().extend({
-    	create : function() {
-    	   console.log("CREATING BUNDLE INSTANCE ",this.extension,this.identifier,this.locale,this.configuration);
-           var instance = 
-        	   	this.extension.create(this.identifier||'_'+(++defaultIdentifier), this.locale);
-           if( this.configuration ) {
-        	   instance.conf = this.configuration;
-           }
-           return instance;
+    var ConfigurableBundle = Oskari.cls(undefined,function() {
+    	console.log("CREATED CONFIGURABLE BUNDLE as BASE for BUNDLES");
+    },{
+    	extend : function(props) {
+           var bndlCls = Oskari.bundleCls();
+           
+           bndlCls.category(props);
+           bndlCls.category({
+        	   create: function() {
+        		   console.log("CREATING BUNDLE INSTANCE ",this.extension,this.identifier,this.locale,this.configuration);
+                   var instance = 
+                       this.extension.create(this.identifier||'_'+(++defaultIdentifier), this.locale);
+                   
+                   var configProps = this.configuration;
+                   
+               	   if (configProps) {
+                      for (ip in configProps) {
+                          if (configProps.hasOwnProperty(ip)) {
+                        	  instance[ip] = configProps[ip];
+                          }
+                      }
+                   }
+                   console.log("- INSTANCE",instance, "post conf");
+        		   return instance;
+        	   }
+              
+           });
+          
+           console.log("DECLARED BUNDLE CLASS",bndlCls);
+           return bndlCls;
         }
+       
     });
+    
+    Oskari.Bundle = ConfigurableBundle.create();
 
     
     return Oskari;
