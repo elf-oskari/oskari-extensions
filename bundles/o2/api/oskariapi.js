@@ -77,7 +77,7 @@ define("oskari", function(Oskari) {
                     for (var m = 0, mlen = me.bundles.length; m < mlen; m++) {
                         var bundle = me.bundles[m],
                        		instance = bundle.start(),
-                       		identifier = instance.identifier;
+                       		identifier = instance.identifier||instance.getName();
                         
                         me.instances[identifier] = instance;
                     }
