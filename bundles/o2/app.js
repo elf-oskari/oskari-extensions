@@ -94,8 +94,8 @@ function(Oskari, Mapping, DIVManager) {
 	     /* extensions may be added at any time (requirements permitting) */
 		 var Extension4 = Oskari.ExtensionEl('Additional',"Additional Hello World");
                  var Bundle4 = Oskari.Bundle(Extension4);
-		 Bundle4.start();
-
+		 var instance4 = Bundle4.start();
+                 console.log(Extension4,Bundle4,instance4);
           });
 
 });
