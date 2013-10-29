@@ -47,51 +47,13 @@ function(Oskari, Mapping, DIVManager) {
         
         /* Let's declare a Bundle which is a module with a 
          *   predefined lifecycle: create, start, stop */
-        var Bundle1 = Oskari.Bundle
-          .extend({
-        	 extension: Extension1,
-        	 locale: locale1,
-        	 configuration: { sample: 'setting1' }
-          });
+        var Bundle1 = Oskari.Bundle( Extension1, locale1, { sample: 'setting1' });
         
-        
-    	var locale2 = {
-    	         tile : {
-    	           title : 'X2'
-    	         },
-    	         flyout : {
-    	           message : 'Oskari 2.2',
-    	           title : 'X2'
-    	         }
-    	    	};
-    		     
-        
-        /* Let's declare a Flyout is a generic UI Component for DivManazer */
-        var Flyout2 = Oskari.Flyout
-          .extend({
-              startPlugin : function() {
-                   var el = this.getEl(), msg = this.getLocalization().message;
-                   el.append(msg);
-              }
-          });
+    	
 
         /* Let's declare a Extension which is required to work with DivManazer */
-        var Extension2 = Oskari.Extension
-            .extend({
-              startPlugin : function() {
-                this.setDefaultTile(this.getLocalization('tile').title);
-                this.setFlyout(Flyout2.create(this, this.getLocalization('flyout')));
-              }
-            });
-        
-        /* Let's declare a Bundle which is a module with a 
-         *   predefined lifecycle: create, start, stop */
-        var Bundle2 = Oskari.Bundle
-          .extend({
-        	 extension: Extension2,
-        	 locale: locale2,
-        	 configuration: { sample: 'setting2' }
-          });
+        var Extension2 = Oskari.ExtensionEl('Shortcut',"<div>Hello World");
+        var Bundle2 = Oskari.Bundle(Extension2);
         
 
         /* Let's register our bundles 

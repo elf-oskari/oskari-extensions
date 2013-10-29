@@ -150,11 +150,11 @@ define("oskari", function(Oskari) {
        
     });
     
-    Oskari.Bundle = ConfigurableBundle.create();
+    var confBundle = ConfigurableBundle.create();
 
     /* Shortcut to Shorcuts */
    Oskari.El = function(title,elContent) {
-     return Oskari.Bundle.extend({
+     return confBundle.extend({
        extension: Oskari.Extension.extend({
           startPlugin : function() {
              this.setDefaultTile(title);
@@ -162,12 +162,29 @@ define("oskari", function(Oskari) {
                startPlugin : function() {
                  this.getEl().append(elContent);
                }
-             }).create(this, { title: titleÂ } ));
+             }).create(this, { title: title } ));
           }
       })
     });
    };
 
+   Oskari.ExtensionEl = function(title,elContent) {
+     return Oskari.Extension.extend({
+          startPlugin : function() {
+             this.setDefaultTile(title);
+             this.setFlyout(Oskari.Flyout.extend({
+               startPlugin : function() {
+                 this.getEl().append(elContent);
+               }
+             }).create(this, { title: title } ));
+          }
+      });
+    };
+ 
+    Oskari.Bundle = function(extension, locale, configuration) {
+        return confBundle.extend({ extension: extension, locale: locale, configuration: configurationÊ} );
+    };
+ 
     
     return Oskari;
 
