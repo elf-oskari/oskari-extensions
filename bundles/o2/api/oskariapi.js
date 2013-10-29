@@ -152,6 +152,22 @@ define("oskari", function(Oskari) {
     
     Oskari.Bundle = ConfigurableBundle.create();
 
+    /* Shortcut to Shorcuts */
+   Oskari.El = function(title,elContent) {
+     return Oskari.Bundle.extend({
+       extension: Oskari.Extension.extend({
+          startPlugin : function() {
+             this.setDefaultTile(title);
+             this.setFlyout(Oskari.Flyout.extend({
+               startPlugin : function() {
+                 this.getEl().append(elContent);
+               }
+             }).create(this, { title: title } ));
+          }
+      })
+    }).start();
+   };
+
     
     return Oskari;
 
