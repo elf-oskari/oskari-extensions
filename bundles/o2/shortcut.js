@@ -6,10 +6,10 @@
  *
  */
 
-define([ "./api/oskariapi", "mapfull", "divmanazer" ],
+define([ "./api/oskariapi", "mapfull", "divmanazer","jquery" ],
 
 /* */
-function(Oskari, Mapping, DIVManager) {
+function(Oskari, Mapping, DIVManager,jQuery) {
 
  Oskari.El("Hello",jQuery('<div>World!</div>'))
 
