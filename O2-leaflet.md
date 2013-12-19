@@ -1,7 +1,9 @@
 oskari2
 =================
 
-- http://demo.paikkatietoikkuna.fi/web/fi/kartta?viewId=5890 ( leaflet - version requires a patch to AfterMapMoveEvent, see Patch #2 hack below  )
+- http://demo.paikkatietoikkuna.fi/web/fi/kartta?viewId=5890 ( leaflet )
+- version requires a patch to AfterMapMoveEvent, see Patch #2 hack below for online hack
+- fixed in Git but not has not been built for demo 
 
 
 
