@@ -3,12 +3,19 @@ oskari-extensions
 
 This is Free Software.
 
+----
+
+Most up to date Proof-of-Concepts for Oskari 2.0 preview which is already available in GitHub.
+see: https://github.com/nls-jajuko/oskari-extensions/blob/develop/O2.md
+
+----
+
 A Collection of Proofs-of-concepts and Samples for Oskari. 
 Created during years 2009 - 2013.
 
 # /bundles/require
 
-PoC for Oskari 2.0 based on require dependency management 
+Obsolete PoC for Oskari 2.0 based on require dependency management 
 
 # /bundles/social 
 
