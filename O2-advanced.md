@@ -2,7 +2,6 @@
 # 5) simple extension with flyout and some event handling and lodash templates
 - adds own event class
 - Note: listens to own event just for demo purposes - no need to send events to self in real life scenarios  
-- Note: requires a patch not available in demo at the time of writing - see bottom for patch #1   
 
 
 ```
@@ -197,68 +196,3 @@ require({
 
 ```
   
-----
-
-# Patch #1
-
-```
-/* Oskari.Event */
-    /* example: 
-     *   var evtCls = Oskari.Event.extend({ name: 'MyEvent' });
-     *   var evt = evtCls.create({ 'prop': 'value' }); 
-     *   Oskari.getSandbox().notifyAll(evt);  
-     */ 
-    var ExtendableEvent = 
-     Oskari.cls('Oskari.Event', function() {
-        console.log("CREATED EXTENDABLE EVENT as BASE for EVENTS");
-    }, {
-    extend : function(props) {
-       return Oskari.cls(props.name ? 'Oskari.event._.'+props.name: undefined,function(instanceProps) {
-            for (ip in instanceProps) {
-                if (instanceProps.hasOwnProperty(ip)) {
-                this[ip] = instanceProps[ip];
-                }   
-            }
-          },{
-              getName : function() {
-                return this.name;
-              }
-           },{
-             protocol : ['Oskari.mapframework.event.Event']
-           }).category(props);
-    }
-    });
-
-    Oskari.Event = ExtendableEvent.create();
-    
-    /* Oskari.Request */
-    /* example: 
-     *   var reqCls = Oskari.Request.extend({ name: 'MyRequest'});
-     *   var req = reqcls.create( { 'prop': 'value' });
-     *   Oskari.getSandbox().request("MainMapModule", req);
-     *    
-     */ 
-    var ExtendableRequest = 
-     Oskari.cls('Oskari.Request', function() {
-        console.log("CREATED EXTENDABLE REQUEST as BASE for REQUESTS");
-    }, {
-    extend : function(props) {
-          return Oskari.cls(props.name ? 'Oskari.request._.'+props.name: undefined,function(instanceProps) {
-            for (ip in instanceProps) {
-              if (instanceProps.hasOwnProperty(ip)) {
-                 this[ip] = instanceProps[ip];
-              }
-            }
-         },{
-           getName : function() {
-                return this.name;
-           }
-         },{
-           protocol : ['Oskari.mapframework.request.Request']
-         }).category(props);
-       }
-     });
-
-    Oskari.Request = ExtendableRequest.create();
-    
-```
