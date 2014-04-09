@@ -5,22 +5,30 @@
 Oskari.clazz.define("Oskari.sample.bundle.helloworld.Flyout",
 function() {}, 
 {
+	/* HTML templates */
     templates: {
         'mapMoved' : _.template('<div>${ msg }: ${ lon },${ lat }.</div>') 
     },
+    /* App specific methods */
     showMapMoved: function (lonLatInfo) {
-        this.getEl().append(
-             this.templates.mapMoved(lonLatInfo) 
-       );
+        var content = this.templates.mapMoved(lonLatInfo);
+        this.getEl().append( content  );
     },
+    /* API implementations */
     startPlugin : function() {
-        var el = this.getEl(), msg = this.getLocalization().messages.greeting;
-         el.append(msg);
-    },
- 
-    stopPlugin : function() {
-         var el = this.getEl();
-         el.remove();
+         var sandbox = this.instance.getSandbox(), 
+			el = this.getEl(), loc = this.getLocalization(),
+			msg = loc.messages.greeting,
+			btnTitle = loc.buttons.tampere;
+        el.append(msg);
+		
+		el.append(
+		  jQuery("<button />").
+		  append(btnTitle).
+		  click(function() {
+			sandbox.postRequestByName('MapMoveRequest',[326165,6822369,10]);
+		  }));
+ 		
     }
 }, {
     "extend" : ["Oskari.userinterface.extension.DefaultFlyout"]
@@ -84,7 +92,10 @@ Oskari.registerLocalization([{
                     "title" : "Hello World", 
                      "messages": { 
                           "greeting": "Hello World Greeting",
-		          "mapMoved" : "The Map has been Moved"
+		                  "mapMoved" : "The Map has been Moved"
+                     },
+                     "buttons" : {
+                    	  "tampere" : "Go to Tampere!" 
                      }
                  }
         }
@@ -96,8 +107,11 @@ Oskari.registerLocalization([{
                     "title" : "Hei maailma", 
                      "messages": { 
                           "greeting": "Heippa hei",
-		          "mapMoved" : "Karttaa on siirretty"
-                     }
+		                   "mapMoved" : "Karttaa on siirretty"
+                     },
+                     "buttons" : {
+                   	  "tampere" : "Tampereelle!" 
+                    }
                  }
         }
         
