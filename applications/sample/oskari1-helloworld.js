@@ -5,17 +5,19 @@
 Oskari.clazz.define("Oskari.sample.bundle.helloworld.Flyout",
 function() {}, 
 {
+    templates: {
+        'mapMoved' : _.template('<div>${ msg }: ${ lon },${ lat }.</div>') 
+    },
+    showMapMoved: function (lonLatInfo) {
+        this.getEl().append(
+             this.templates.mapMoved(lonLatInfo) 
+       );
+    },
     startPlugin : function() {
         var el = this.getEl(), msg = this.getLocalization().messages.greeting;
          el.append(msg);
     },
-    showMapMoved : function() { 
-        var el = this.getEl(), 
-            msgEl = jQuery("<div />"),
-            msg = this.getLocalization().messages.mapMoved;
-        msgEl.append(msg);
-        el.append(msgEl);
-    },
+ 
     stopPlugin : function() {
          var el = this.getEl();
          el.remove();
@@ -30,8 +32,10 @@ Oskari.clazz.define("Oskari.sample.bundle.helloworld.Extension",
 function() {}, 
 {
    "eventHandlers" : {
-      "AfterMapMoveEvent" : function() {
-           this.plugins["Oskari.userinterface.Flyout"].showMapMoved();
+      "AfterMapMoveEvent" : function(evt) {
+    	   var msg = this.getLocalization('flyout').messages.mapMoved;
+    	       lonLatInfo = { lon: evt.getCenterX(), lat: evt.getCenterY(), msg: msg };
+           this.plugins["Oskari.userinterface.Flyout"].showMapMoved(lonLatInfo);
        }
    }
 
